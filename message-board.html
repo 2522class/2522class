@@ -142,7 +142,7 @@
   <div class="wrap">
     <div class="nav-brand">临汾一中 · 2522班</div>
     <div class="nav-links">
-      <a href="linfen-2522.html">← 返回班级主页</a>
+      <a href="https://2522class.github.io/2522class">← 返回班级主页</a>
     </div>
   </div>
 </nav>
@@ -173,9 +173,6 @@
         <span class="char-count"><span id="charNum">0</span>/300</span>
         <button class="submit-btn" id="submitBtn" onclick="submitMessage()">发布留言</button>
       </div>
-      <p class="form-note">
-        提示：留言会保存到云端数据库，全班同学打开这个页面都能实时看到彼此的留言。首次使用前，需要在本文件顶部的 <code>firebaseConfig</code> 中填入你自己申请的 Firebase 项目配置（详见页面底部说明）。
-      </p>
     </div>
   </div>
 </section>
@@ -194,28 +191,16 @@
 
 <footer>
   <div class="wrap">
-    <p>回到 <a href="linfen-2522.html">临汾一中 2522班 主页</a></p>
+    <p>回到 <a href="https://2522class.github.io/2522class">临汾一中 2522班 主页</a></p>
   </div>
 </footer>
 
 <script type="module">
   // ============================================================
-  // 存储服务接入说明（Firebase Firestore，免费额度足够班级留言板使用）
-  // 1. 打开 https://console.firebase.google.com 用 Google 账号登录
-  // 2. 新建一个项目（名字随意，例如 "class2522-board"）
-  // 3. 左侧菜单进入 "Firestore Database" -> 创建数据库 -> 选择"测试模式"（方便起步，见下方安全提示）
-  // 4. 项目设置(⚙️) -> 常规 -> 滚动到"你的应用" -> 点击网页图标</> 注册一个应用
-  // 5. 会得到一个 firebaseConfig 对象，把下面的占位内容替换成你自己的
+  // Supabase 留言板配置
   // ============================================================
-  const firebaseConfig = {
-    apiKey: "AIzaSyAL9G9vg6ac_mnLSKDxSV9hoD6cDtA2lTk",
-    authDomain: "class-c0f38.firebaseapp.com",
-    projectId: "class-c0f38",
-    storageBucket: "class-c0f38.firebasestorage.app",
-    messagingSenderId: "713314241376",
-    appId: "1:713314241376:web:d974f0ddb7b0951a4aac05",
-    measurementId: "G-P2MRXGV1LV"
-  };
+  const SUPABASE_URL = "https://oforawiewzcкdamjvb.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_gCqttAFNoi4RTUuRu978tQ_xQaRp_-k";
 
   // ---- 滚动淡入 ----
   var reveals = document.querySelectorAll('.reveal');
@@ -244,7 +229,7 @@
 
   function formatTime(ts) {
     if (!ts) return '刚刚';
-    var d = ts.toDate ? ts.toDate() : new Date(ts);
+    var d = new Date(ts);
     var m = (d.getMonth() + 1).toString().padStart(2, '0');
     var day = d.getDate().toString().padStart(2, '0');
     var hh = d.getHours().toString().padStart(2, '0');
@@ -264,7 +249,7 @@
         li.innerHTML =
           '<div class="msg-head">' +
             '<span class="msg-author">' + escapeHtml(m.name) + '</span>' +
-            '<span class="msg-time">' + escapeHtml(formatTime(m.time)) + '</span>' +
+            '<span class="msg-time">' + escapeHtml(formatTime(m.created_at)) + '</span>' +
           '</div>' +
           '<div class="msg-body">' + escapeHtml(m.body) + '</div>';
         msgList.appendChild(li);
@@ -277,56 +262,62 @@
     charNum.textContent = msgBody.value.length;
   });
 
-  // ---- 未配置 Firebase 时的提示状态 ----
-  if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'YOUR_API_KEY') {
-    msgList.innerHTML =
-      '<li class="msg-empty">留言板尚未连接存储服务。<br>请在 message-board.html 顶部的 firebaseConfig 中填入你自己的 Firebase 项目配置后，留言即可保存并被所有人看到。</li>';
-    msgCountLabel.textContent = '未连接';
-    submitBtn.disabled = true;
-  } else {
-    // ---- 已配置，接入 Firebase Firestore 实时存储 ----
-    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js').then(function(appModule) {
-      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(function(fsModule) {
-        var app = appModule.initializeApp(firebaseConfig);
-        var db = fsModule.getFirestore(app);
-        var col = fsModule.collection(db, 'messages');
-        var q = fsModule.query(col, fsModule.orderBy('time', 'desc'));
+  // ---- Supabase 客户端初始化 ----
+  import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js').then(function(m) {
+    var supabase = m.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        fsModule.onSnapshot(q, function(snapshot) {
-          var docs = snapshot.docs.map(function(d) { return d.data(); });
-          renderMessages(docs);
-        }, function(err) {
-          msgList.innerHTML = '<li class="msg-empty">连接留言板失败，请检查 Firestore 配置与安全规则。</li>';
-          console.error(err);
-        });
+    // 实时订阅留言
+    supabase
+      .from('messages')
+      .on('*', function(payload) {
+        loadMessages();
+      })
+      .subscribe();
 
-        window.submitMessage = function() {
-          var name = msgName.value.trim() || '匿名同学';
-          var body = msgBody.value.trim();
-          if (!body) {
-            msgBody.style.borderColor = '#b5342a';
-            msgBody.focus();
-            return;
+    function loadMessages() {
+      supabase
+        .from('messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .then(function(resp) {
+          if (resp.error) {
+            console.error(resp.error);
+            msgList.innerHTML = '<li class="msg-empty">留言板连接失败，请稍后重试。</li>';
+          } else {
+            renderMessages(resp.data);
           }
-          submitBtn.disabled = true;
-          fsModule.addDoc(col, {
-            name: name,
-            body: body,
-            time: fsModule.serverTimestamp()
-          }).then(function() {
+        });
+    }
+
+    window.submitMessage = function() {
+      var name = msgName.value.trim() || '匿名同学';
+      var body = msgBody.value.trim();
+      if (!body) {
+        msgBody.style.borderColor = '#b5342a';
+        msgBody.focus();
+        return;
+      }
+      submitBtn.disabled = true;
+      supabase
+        .from('messages')
+        .insert([{ name: name, body: body }])
+        .then(function(resp) {
+          if (resp.error) {
+            console.error(resp.error);
+            submitBtn.disabled = false;
+            alert('留言发送失败，请稍后重试。');
+          } else {
             msgBody.value = '';
             msgName.value = '';
             charNum.textContent = '0';
             submitBtn.disabled = false;
-          }).catch(function(err) {
-            console.error(err);
-            submitBtn.disabled = false;
-            alert('留言发送失败，请稍后重试。');
-          });
-        };
-      });
-    });
-  }
+            loadMessages();
+          }
+        });
+    };
+
+    loadMessages();
+  });
 </script>
 
 </body>

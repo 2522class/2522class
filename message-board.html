@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>留言板 · 临汾一中2522班</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f1e6;
+    --paper-dark: #ece4d2;
+    --ink: #2a2620;
+    --ink-soft: #6b6255;
+    --flag-red: #b5342a;
+    --uniform-navy: #2c3e56;
+    --uniform-navy-light: #3f5474;
+    --hairline: rgba(42,38,32,0.18);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  hr.rule { border: none; border-top: 1px solid var(--hairline); margin: 0; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(.2,.7,.3,1), transform 0.7s cubic-bezier(.2,.7,.3,1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  /* ---- Nav ---- */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(246,241,230,0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; max-width: 1000px; }
+  .nav-brand { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 16px; letter-spacing: 0.05em; }
+  .nav-links a {
+    font-size: 13px; color: var(--ink-soft); text-decoration: none;
+    letter-spacing: 0.03em; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--flag-red); }
+
+  /* ---- Hero ---- */
+  .board-hero { padding: 72px 0 40px; text-align: center; }
+  .eyebrow {
+    font-size: 13px; letter-spacing: 0.35em; color: var(--flag-red); font-weight: 500; margin: 0 0 18px;
+  }
+  .board-hero h1 {
+    font-family: 'Noto Serif SC', serif; font-weight: 900;
+    font-size: clamp(28px, 5vw, 42px); margin: 0 0 16px;
+  }
+  .board-hero p {
+    font-size: 14.5px; color: var(--ink-soft); line-height: 1.9;
+    max-width: 440px; margin: 0 auto;
+  }
+  .seal-float {
+    width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--flag-red);
+    display: flex; align-items: center; justify-content: center; margin: 24px auto 0;
+    color: var(--flag-red); font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 16px;
+    animation: float 3.5s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+  /* ---- Form ---- */
+  .board-form-sec { padding: 24px 0 56px; }
+  .form-card {
+    background: #fff; border: 1px solid var(--hairline); padding: 32px;
+    box-shadow: 0 1px 3px rgba(42,38,32,0.1);
+  }
+  .form-row { margin-bottom: 18px; }
+  .form-row label {
+    display: block; font-size: 12.5px; color: var(--ink-soft);
+    letter-spacing: 0.05em; margin-bottom: 8px;
+  }
+  .form-row input, .form-row textarea, .form-row select {
+    width: 100%; font-family: 'Noto Sans SC', sans-serif; font-size: 14px;
+    padding: 12px 14px; border: 1px solid var(--hairline); background: var(--paper);
+    color: var(--ink); transition: border-color 0.25s, background 0.25s;
+  }
+  .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+    outline: none; border-color: var(--flag-red); background: #fff;
+  }
+  .form-row textarea { resize: vertical; min-height: 90px; line-height: 1.7; }
+  .form-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; }
+  .char-count { font-size: 12px; color: var(--ink-soft); }
+  .submit-btn {
+    font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 500;
+    color: #fff; background: var(--uniform-navy); border: none; padding: 12px 30px;
+    cursor: pointer; letter-spacing: 0.03em; transition: background 0.25s, transform 0.15s;
+  }
+  .submit-btn:hover { background: var(--uniform-navy-light); }
+  .submit-btn:active { transform: scale(0.97); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .form-note {
+    font-size: 12px; color: var(--ink-soft); margin-top: 14px; line-height: 1.8;
+    padding-top: 14px; border-top: 1px dashed var(--hairline);
+  }
+  .form-note code {
+    background: var(--paper-dark); padding: 1px 6px; border-radius: 3px;
+    font-size: 11.5px; color: var(--flag-red);
+  }
+
+  /* ---- Message list ---- */
+  .board-list-sec { padding: 0 0 80px; }
+  .sec-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28px; }
+  .sec-head h2 { font-family: 'Noto Serif SC', serif; font-size: 21px; font-weight: 700; margin: 0; }
+  .sec-head span { font-size: 12px; color: var(--ink-soft); letter-spacing: 0.05em; }
+
+  .msg-list { list-style: none; margin: 0; padding: 0; }
+  .msg-item {
+    background: #fff; border: 1px solid var(--hairline); padding: 20px 22px;
+    margin-bottom: 16px; opacity: 0; transform: translateY(14px);
+    animation: msgIn 0.5s ease-out forwards;
+  }
+  @keyframes msgIn { to { opacity: 1; transform: translateY(0); } }
+  .msg-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .msg-author { font-family: 'Noto Serif SC', serif; font-weight: 600; font-size: 14.5px; color: var(--uniform-navy); }
+  .msg-time { font-size: 11.5px; color: var(--ink-soft); }
+  .msg-body { font-size: 14px; line-height: 1.8; color: var(--ink); white-space: pre-wrap; }
+  .msg-empty {
+    text-align: center; padding: 40px 20px; color: var(--ink-soft); font-size: 13.5px;
+    border: 1px dashed var(--hairline);
+  }
+
+  footer { padding: 40px 0 72px; text-align: center; border-top: 1px solid var(--hairline); }
+  footer p { font-family: 'Noto Serif SC', serif; font-size: 14px; color: var(--ink-soft); }
+  footer a { color: var(--flag-red); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .form-card { padding: 24px 20px; }
+    .form-foot { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-brand">临汾一中 · 2522班</div>
+    <div class="nav-links">
+      <a href="linfen-2522.html">← 返回班级主页</a>
+    </div>
+  </div>
+</nav>
+
+<header class="board-hero">
+  <div class="wrap">
+    <p class="eyebrow">MESSAGE BOARD</p>
+    <h1>班级留言板</h1>
+    <p>写下你想对 2522 班说的话——一句祝福、一段回忆，或是毕业前想说却没来得及说的话。</p>
+    <div class="seal-float">言</div>
+  </div>
+</header>
+
+<hr class="rule">
+
+<section class="board-form-sec">
+  <div class="wrap">
+    <div class="form-card reveal">
+      <div class="form-row">
+        <label for="msgName">你的名字 / 昵称</label>
+        <input type="text" id="msgName" placeholder="例如：小王 / 匿名同学" maxlength="20">
+      </div>
+      <div class="form-row">
+        <label for="msgBody">留言内容</label>
+        <textarea id="msgBody" placeholder="写下你想说的话……" maxlength="300"></textarea>
+      </div>
+      <div class="form-foot">
+        <span class="char-count"><span id="charNum">0</span>/300</span>
+        <button class="submit-btn" id="submitBtn" onclick="submitMessage()">发布留言</button>
+      </div>
+      <p class="form-note">
+        提示：留言会保存到云端数据库，全班同学打开这个页面都能实时看到彼此的留言。首次使用前，需要在本文件顶部的 <code>firebaseConfig</code> 中填入你自己申请的 Firebase 项目配置（详见页面底部说明）。
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="board-list-sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2>大家的留言</h2>
+      <span id="msgCountLabel">共 0 条</span>
+    </div>
+    <ul class="msg-list" id="msgList"></ul>
+  </div>
+</section>
+
+
+
+<footer>
+  <div class="wrap">
+    <p>回到 <a href="linfen-2522.html">临汾一中 2522班 主页</a></p>
+  </div>
+</footer>
+
+<script type="module">
+  // ============================================================
+  // 存储服务接入说明（Firebase Firestore，免费额度足够班级留言板使用）
+  // 1. 打开 https://console.firebase.google.com 用 Google 账号登录
+  // 2. 新建一个项目（名字随意，例如 "class2522-board"）
+  // 3. 左侧菜单进入 "Firestore Database" -> 创建数据库 -> 选择"测试模式"（方便起步，见下方安全提示）
+  // 4. 项目设置(⚙️) -> 常规 -> 滚动到"你的应用" -> 点击网页图标</> 注册一个应用
+  // 5. 会得到一个 firebaseConfig 对象，把下面的占位内容替换成你自己的
+  // ============================================================
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  // ---- 滚动淡入 ----
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(function(el) { observer.observe(el); });
+
+  var msgList = document.getElementById('msgList');
+  var msgCountLabel = document.getElementById('msgCountLabel');
+  var charNum = document.getElementById('charNum');
+  var msgBody = document.getElementById('msgBody');
+  var msgName = document.getElementById('msgName');
+  var submitBtn = document.getElementById('submitBtn');
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function formatTime(ts) {
+    if (!ts) return '刚刚';
+    var d = ts.toDate ? ts.toDate() : new Date(ts);
+    var m = (d.getMonth() + 1).toString().padStart(2, '0');
+    var day = d.getDate().toString().padStart(2, '0');
+    var hh = d.getHours().toString().padStart(2, '0');
+    var mm = d.getMinutes().toString().padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + day + ' ' + hh + ':' + mm;
+  }
+
+  function renderMessages(docs) {
+    msgList.innerHTML = '';
+    if (docs.length === 0) {
+      msgList.innerHTML = '<li class="msg-empty">还没有留言，来写下第一条吧～</li>';
+    } else {
+      docs.forEach(function(m, i) {
+        var li = document.createElement('li');
+        li.className = 'msg-item';
+        li.style.animationDelay = (i * 0.05) + 's';
+        li.innerHTML =
+          '<div class="msg-head">' +
+            '<span class="msg-author">' + escapeHtml(m.name) + '</span>' +
+            '<span class="msg-time">' + escapeHtml(formatTime(m.time)) + '</span>' +
+          '</div>' +
+          '<div class="msg-body">' + escapeHtml(m.body) + '</div>';
+        msgList.appendChild(li);
+      });
+    }
+    msgCountLabel.textContent = '共 ' + docs.length + ' 条';
+  }
+
+  msgBody.addEventListener('input', function() {
+    charNum.textContent = msgBody.value.length;
+  });
+
+  // ---- 未配置 Firebase 时的提示状态 ----
+  if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'YOUR_API_KEY') {
+    msgList.innerHTML =
+      '<li class="msg-empty">留言板尚未连接存储服务。<br>请在 message-board.html 顶部的 firebaseConfig 中填入你自己的 Firebase 项目配置后，留言即可保存并被所有人看到。</li>';
+    msgCountLabel.textContent = '未连接';
+    submitBtn.disabled = true;
+  } else {
+    // ---- 已配置，接入 Firebase Firestore 实时存储 ----
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js').then(function(appModule) {
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(function(fsModule) {
+        var app = appModule.initializeApp(firebaseConfig);
+        var db = fsModule.getFirestore(app);
+        var col = fsModule.collection(db, 'messages');
+        var q = fsModule.query(col, fsModule.orderBy('time', 'desc'));
+
+        fsModule.onSnapshot(q, function(snapshot) {
+          var docs = snapshot.docs.map(function(d) { return d.data(); });
+          renderMessages(docs);
+        }, function(err) {
+          msgList.innerHTML = '<li class="msg-empty">连接留言板失败，请检查 Firestore 配置与安全规则。</li>';
+          console.error(err);
+        });
+
+        window.submitMessage = function() {
+          var name = msgName.value.trim() || '匿名同学';
+          var body = msgBody.value.trim();
+          if (!body) {
+            msgBody.style.borderColor = '#b5342a';
+            msgBody.focus();
+            return;
+          }
+          submitBtn.disabled = true;
+          fsModule.addDoc(col, {
+            name: name,
+            body: body,
+            time: fsModule.serverTimestamp()
+          }).then(function() {
+            msgBody.value = '';
+            msgName.value = '';
+            charNum.textContent = '0';
+            submitBtn.disabled = false;
+          }).catch(function(err) {
+            console.error(err);
+            submitBtn.disabled = false;
+            alert('留言发送失败，请稍后重试。');
+          });
+        };
+      });
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -224,15 +224,10 @@
     font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 500;
     color: #fff; background: var(--uniform-navy); border: none; padding: 12px 32px;
     cursor: pointer; letter-spacing: 0.03em; transition: background 0.25s, transform 0.15s;
+    display: inline-block; text-decoration: none;
   }
   .board-btn:hover { background: var(--uniform-navy-light); }
   .board-btn:active { transform: scale(0.97); }
-  .board-tip {
-    margin: 16px 0 0 !important; font-size: 12.5px !important; color: var(--flag-red) !important;
-    opacity: 0; height: 0; overflow: hidden;
-    transition: opacity 0.35s ease, height 0.35s ease;
-  }
-  .board-tip.show { opacity: 1; height: auto; }
 
   /* ---- Footer ---- */
   footer { padding: 56px 0 80px; text-align: center; border-top: 1px solid var(--hairline); }
@@ -282,7 +277,7 @@
     <div class="hero-copy">
       <p class="eyebrow">LINFEN NO.1 SENIOR HIGH SCHOOL</p>
       <h1>临汾一中 2522班<br>做人 · 求知 · 健身</h1>
-      <p>我们是临汾一中的2522班集体，扎根于这所拥有百年历史的三晋名校，在浓厚的书香氛围中，与同学们一起脚踏实地、追求卓越。</p>
+      <p>我们是临汾一中的一个班集体，扎根于这所拥有百年历史的三晋名校，在浓厚的书香氛围中，与同学们一起脚踏实地、追求成长。</p>
       <div class="hero-stats">
         <div><span class="num">1896</span><span class="lbl">学校创办年份</span></div>
         <div><span class="num">2522</span><span class="lbl">班级编号</span></div>
@@ -368,15 +363,15 @@
     <div class="values-row reveal reveal-delay-1">
       <div class="value-item">
         <span class="word">做人</span>
-        <div class="desc">忠于职守，勇于担当</div>
+        <div class="desc">品行为先，立德树人</div>
       </div>
       <div class="value-item">
         <span class="word">求知</span>
-        <div class="desc">精益求精，追求严谨</div>
+        <div class="desc">好学善思，追求真知</div>
       </div>
       <div class="value-item">
         <span class="word">健身</span>
-        <div class="desc">追求卓越，超越自我</div>
+        <div class="desc">强健体魄，全面发展</div>
       </div>
     </div>
   </div>
@@ -432,13 +427,13 @@
 
     <div class="photo-block reveal">
       <div class="photo-frame">
-        <img src="images/photo4.jpg" alt="文艺汇演：合唱团身着复古军装造型，在舞台上齐声高歌，右侧同学高举红旗">
+        <img src="images/photo2.jpg" alt="文艺汇演：合唱团身着复古军装造型，在舞台上齐声高歌，右侧同学高举红旗">
       </div>
       <div class="caption-row">
         <div class="caption-num">02</div>
         <div class="caption-text">
           <h3>舞台之上，青春唱响</h3>
-          <p>灯光聚焦的舞台上，同学们身着红军装束整齐列队，放声歌唱。一面鲜艳的红旗在人群中高高扬起，将全场气氛推向高潮。</p>
+          <p>灯光聚焦的舞台上，同学们身着复古装束整齐列队，放声歌唱。一面鲜艳的红旗在人群中高高扬起，将全场气氛推向高潮。</p>
           <span class="meta">文艺汇演 · 合唱表演</span>
         </div>
       </div>
@@ -466,8 +461,7 @@
       <div class="board-icon">言</div>
       <h2>班级留言板</h2>
       <p>写下你想对 2522 班说的话——祝福、回忆，或是悄悄话。</p>
-      <button class="board-btn" onclick="showBoardTip()">进入留言板</button>
-      <p class="board-tip" id="boardTip">留言板功能开发中，敬请期待～</p>
+      <a class="board-btn" href="message-board.html">进入留言板</a>
     </div>
   </div>
 </section>
@@ -516,12 +510,6 @@
     });
   }, { threshold: 0.5 });
   counters.forEach(function(el) { counterObserver.observe(el); });
-
-  // 留言板按钮提示
-  function showBoardTip() {
-    var tip = document.getElementById('boardTip');
-    tip.classList.add('show');
-  }
 </script>
 
 </body>

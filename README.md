@@ -1,4 +1,6 @@
 ## Hi there 👋
+## 这是一个临汾一中2522班网站，欢迎浏览
+## https://2522class.github.io/2522class
 
 <!--
 **2522class/2522class** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.

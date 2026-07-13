@@ -199,7 +199,7 @@
   // ============================================================
   // Supabase 留言板配置
   // ============================================================
-  const SUPABASE_URL = "https://oforawiawewzckdamjvb.supabase.co";
+  const SUPABASE_URL = "https://oforawiewzcкdamjvb.supabase.co";
   const SUPABASE_KEY = "sb_publishable_gCqttAFNoi4RTUuRu978tQ_xQaRp_-k";
 
   // ---- 滚动淡入 ----
@@ -262,9 +262,17 @@
     charNum.textContent = msgBody.value.length;
   });
 
-  // ---- Supabase 客户端初始化 ----
-  import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js').then(function(m) {
-    var supabase = m.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // 占位函数，防止异步加载导致的报错
+  window.submitMessage = function() {
+    submitBtn.disabled = true;
+    submitBtn.textContent = '加载中...';
+  };
+
+  // ---- 加载 Supabase 库 ----
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  script.onload = function() {
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // 实时订阅留言
     supabase
@@ -289,6 +297,7 @@
         });
     }
 
+    // 真正的 submitMessage 实现
     window.submitMessage = function() {
       var name = msgName.value.trim() || '匿名同学';
       var body = msgBody.value.trim();
@@ -305,20 +314,24 @@
           if (resp.error) {
             console.error(resp.error);
             submitBtn.disabled = false;
+            submitBtn.textContent = '发布留言';
             alert('留言发送失败，请稍后重试。');
           } else {
             msgBody.value = '';
             msgName.value = '';
             charNum.textContent = '0';
             submitBtn.disabled = false;
+            submitBtn.textContent = '发布留言';
             loadMessages();
           }
         });
     };
 
     loadMessages();
-  });
+  };
+  script.onerror = function() {
+    msgList.innerHTML = '<li class="msg-empty">库加载失败，请检查网络连接后刷新。</li>';
+  };
+  document.head.appendChild(script);
 </script>
-
-</body>
 </html>

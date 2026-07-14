@@ -269,7 +269,7 @@
   };
 
   // ---- 加载 Supabase 库 ----
-  import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2').then(function(m) {
+  import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm').then(function(m) {
     var supabase = m.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     function loadMessages() {

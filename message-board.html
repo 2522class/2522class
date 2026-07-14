@@ -199,7 +199,7 @@
   // ============================================================
   // Supabase 留言板配置
   // ============================================================
-  const SUPABASE_URL = "https://oforawiewzcкdamjvb.supabase.co";
+  const SUPABASE_URL = "https://oforawiewzckdamjvb.supabase.co";
   const SUPABASE_KEY = "sb_publishable_gCqttAFNoi4RTUuRu978tQ_xQaRp_-k";
 
   // ---- 滚动淡入 ----
@@ -269,18 +269,8 @@
   };
 
   // ---- 加载 Supabase 库 ----
-  var script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-  script.onload = function() {
-    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // 实时订阅留言
-    supabase
-      .from('messages')
-      .on('*', function(payload) {
-        loadMessages();
-      })
-      .subscribe();
+  import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2').then(function(m) {
+    var supabase = m.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     function loadMessages() {
       supabase
@@ -289,11 +279,21 @@
         .order('created_at', { ascending: false })
         .then(function(resp) {
           if (resp.error) {
-            console.error(resp.error);
+            console.error('查询错误:', resp.error);
             msgList.innerHTML = '<li class="msg-empty">留言板连接失败，请稍后重试。</li>';
+            submitBtn.disabled = false;
+            submitBtn.textContent = '发布留言';
           } else {
             renderMessages(resp.data);
+            submitBtn.disabled = false;
+            submitBtn.textContent = '发布留言';
           }
+        })
+        .catch(function(err) {
+          console.error('网络错误:', err);
+          msgList.innerHTML = '<li class="msg-empty">网络连接出错，请刷新重试。</li>';
+          submitBtn.disabled = false;
+          submitBtn.textContent = '发布留言';
         });
     }
 
@@ -307,15 +307,16 @@
         return;
       }
       submitBtn.disabled = true;
+      submitBtn.textContent = '发布中...';
       supabase
         .from('messages')
         .insert([{ name: name, body: body }])
         .then(function(resp) {
           if (resp.error) {
-            console.error(resp.error);
+            console.error('插入错误:', resp.error);
             submitBtn.disabled = false;
             submitBtn.textContent = '发布留言';
-            alert('留言发送失败，请稍后重试。');
+            alert('留言发送失败，请稍后重试。错误: ' + resp.error.message);
           } else {
             msgBody.value = '';
             msgName.value = '';
@@ -324,14 +325,19 @@
             submitBtn.textContent = '发布留言';
             loadMessages();
           }
+        })
+        .catch(function(err) {
+          console.error('网络错误:', err);
+          submitBtn.disabled = false;
+          submitBtn.textContent = '发布留言';
+          alert('网络连接出错，请稍后重试。');
         });
     };
 
     loadMessages();
-  };
-  script.onerror = function() {
+  }).catch(function(err) {
+    console.error('库加载失败:', err);
     msgList.innerHTML = '<li class="msg-empty">库加载失败，请检查网络连接后刷新。</li>';
-  };
-  document.head.appendChild(script);
+  });
 </script>
 </html>

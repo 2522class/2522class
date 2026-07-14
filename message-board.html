@@ -121,10 +121,51 @@
   .msg-author { font-family: 'Noto Serif SC', serif; font-weight: 600; font-size: 14.5px; color: var(--uniform-navy); }
   .msg-time { font-size: 11.5px; color: var(--ink-soft); }
   .msg-body { font-size: 14px; line-height: 1.8; color: var(--ink); white-space: pre-wrap; }
+  .msg-foot { margin-top: 10px; }
+  .reply-link {
+    font-size: 12px; color: var(--uniform-navy); cursor: pointer;
+    letter-spacing: 0.03em; user-select: none; transition: color 0.2s;
+  }
+  .reply-link:hover { color: var(--flag-red); }
   .msg-empty {
     text-align: center; padding: 40px 20px; color: var(--ink-soft); font-size: 13.5px;
     border: 1px dashed var(--hairline);
   }
+
+  /* ---- Reply form ---- */
+  .reply-form {
+    display: none; margin-top: 14px; padding: 14px; background: var(--paper);
+    border: 1px solid var(--hairline);
+  }
+  .reply-form.show { display: block; }
+  .reply-form input, .reply-form textarea {
+    width: 100%; font-family: 'Noto Sans SC', sans-serif; font-size: 13px;
+    padding: 9px 12px; border: 1px solid var(--hairline); background: #fff;
+    color: var(--ink); margin-bottom: 10px;
+  }
+  .reply-form textarea { resize: vertical; min-height: 60px; line-height: 1.6; }
+  .reply-form input:focus, .reply-form textarea:focus { outline: none; border-color: var(--flag-red); }
+  .reply-form-foot { display: flex; justify-content: flex-end; gap: 8px; }
+  .reply-cancel-btn, .reply-submit-btn {
+    font-family: 'Noto Sans SC', sans-serif; font-size: 12.5px; font-weight: 500;
+    border: none; padding: 8px 18px; cursor: pointer; letter-spacing: 0.03em;
+    transition: background 0.25s, transform 0.15s;
+  }
+  .reply-cancel-btn { background: transparent; color: var(--ink-soft); }
+  .reply-cancel-btn:hover { color: var(--ink); }
+  .reply-submit-btn { background: var(--uniform-navy); color: #fff; }
+  .reply-submit-btn:hover { background: var(--uniform-navy-light); }
+  .reply-submit-btn:active { transform: scale(0.97); }
+  .reply-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ---- Replies list ---- */
+  .replies-list { list-style: none; margin: 14px 0 0; padding: 14px 0 0 18px; border-left: 2px solid var(--hairline); }
+  .reply-item { margin-bottom: 14px; }
+  .reply-item:last-child { margin-bottom: 0; }
+  .reply-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .reply-author { font-family: 'Noto Serif SC', serif; font-weight: 600; font-size: 13px; color: var(--uniform-navy); }
+  .reply-time { font-size: 11px; color: var(--ink-soft); }
+  .reply-body { font-size: 13px; line-height: 1.7; color: var(--ink); white-space: pre-wrap; }
 
   footer { padding: 40px 0 72px; text-align: center; border-top: 1px solid var(--hairline); }
   footer p { font-family: 'Noto Serif SC', serif; font-size: 14px; color: var(--ink-soft); }
@@ -229,7 +270,13 @@
 
   function formatTime(ts) {
     if (!ts) return '刚刚';
-    var d = new Date(ts);
+    // 数据库存的是 UTC 时间，若字符串末尾没有时区标记（Z 或 +00:00），
+    // 需要手动补上，否则浏览器会误当成本地时间解析，导致时间对不上
+    var isoStr = ts;
+    if (typeof ts === 'string' && !/Z$|[+-]\d\d:\d\d$/.test(ts)) {
+      isoStr = ts + 'Z';
+    }
+    var d = new Date(isoStr);
     var m = (d.getMonth() + 1).toString().padStart(2, '0');
     var day = d.getDate().toString().padStart(2, '0');
     var hh = d.getHours().toString().padStart(2, '0');
@@ -239,23 +286,84 @@
 
   function renderMessages(docs) {
     msgList.innerHTML = '';
-    if (docs.length === 0) {
+    // 拆分主留言和回复
+    var topLevel = docs.filter(function(m) { return !m.parent_id; });
+    var repliesByParent = {};
+    docs.forEach(function(m) {
+      if (m.parent_id) {
+        if (!repliesByParent[m.parent_id]) repliesByParent[m.parent_id] = [];
+        repliesByParent[m.parent_id].push(m);
+      }
+    });
+    Object.keys(repliesByParent).forEach(function(pid) {
+      repliesByParent[pid].sort(function(a, b) { return new Date(a.created_at) - new Date(b.created_at); });
+    });
+
+    if (topLevel.length === 0) {
       msgList.innerHTML = '<li class="msg-empty">还没有留言，来写下第一条吧～</li>';
     } else {
-      docs.forEach(function(m, i) {
+      topLevel.forEach(function(m, i) {
         var li = document.createElement('li');
         li.className = 'msg-item';
         li.style.animationDelay = (i * 0.05) + 's';
+
+        var replies = repliesByParent[m.id] || [];
+        var repliesHtml = '';
+        if (replies.length > 0) {
+          repliesHtml = '<ul class="replies-list">' + replies.map(function(r) {
+            return '<li class="reply-item">' +
+              '<div class="reply-head">' +
+                '<span class="reply-author">' + escapeHtml(r.name) + '</span>' +
+                '<span class="reply-time">' + escapeHtml(formatTime(r.created_at)) + '</span>' +
+              '</div>' +
+              '<div class="reply-body">' + escapeHtml(r.body) + '</div>' +
+            '</li>';
+          }).join('') + '</ul>';
+        }
+
         li.innerHTML =
           '<div class="msg-head">' +
             '<span class="msg-author">' + escapeHtml(m.name) + '</span>' +
             '<span class="msg-time">' + escapeHtml(formatTime(m.created_at)) + '</span>' +
           '</div>' +
-          '<div class="msg-body">' + escapeHtml(m.body) + '</div>';
+          '<div class="msg-body">' + escapeHtml(m.body) + '</div>' +
+          repliesHtml +
+          '<div class="msg-foot"><span class="reply-link" data-id="' + m.id + '">回复</span></div>' +
+          '<div class="reply-form" id="reply-form-' + m.id + '">' +
+            '<input type="text" placeholder="你的名字 / 昵称" maxlength="20" id="reply-name-' + m.id + '">' +
+            '<textarea placeholder="写下你的回复……" maxlength="200" id="reply-body-' + m.id + '"></textarea>' +
+            '<div class="reply-form-foot">' +
+              '<button class="reply-cancel-btn" data-cancel="' + m.id + '">取消</button>' +
+              '<button class="reply-submit-btn" data-submit="' + m.id + '">发送回复</button>' +
+            '</div>' +
+          '</div>';
         msgList.appendChild(li);
       });
     }
-    msgCountLabel.textContent = '共 ' + docs.length + ' 条';
+    msgCountLabel.textContent = '共 ' + topLevel.length + ' 条';
+
+    // 绑定"回复"链接点击事件
+    msgList.querySelectorAll('.reply-link').forEach(function(link) {
+      link.addEventListener('click', function() {
+        var id = link.getAttribute('data-id');
+        document.getElementById('reply-form-' + id).classList.add('show');
+        document.getElementById('reply-name-' + id).focus();
+      });
+    });
+    // 绑定"取消"按钮
+    msgList.querySelectorAll('[data-cancel]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.getAttribute('data-cancel');
+        document.getElementById('reply-form-' + id).classList.remove('show');
+      });
+    });
+    // 绑定"发送回复"按钮
+    msgList.querySelectorAll('[data-submit]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.getAttribute('data-submit');
+        window.submitReply(id, btn);
+      });
+    });
   }
 
   msgBody.addEventListener('input', function() {
@@ -330,6 +438,40 @@
           console.error('网络错误:', err);
           submitBtn.disabled = false;
           submitBtn.textContent = '发布留言';
+          alert('网络连接出错，请稍后重试。');
+        });
+    };
+
+    // 回复留言的实现
+    window.submitReply = function(parentId, btnEl) {
+      var nameInput = document.getElementById('reply-name-' + parentId);
+      var bodyInput = document.getElementById('reply-body-' + parentId);
+      var name = nameInput.value.trim() || '匿名同学';
+      var body = bodyInput.value.trim();
+      if (!body) {
+        bodyInput.style.borderColor = '#b5342a';
+        bodyInput.focus();
+        return;
+      }
+      btnEl.disabled = true;
+      btnEl.textContent = '发送中...';
+      supabase
+        .from('messages')
+        .insert([{ name: name, body: body, parent_id: parentId }])
+        .then(function(resp) {
+          if (resp.error) {
+            console.error('回复错误:', resp.error);
+            btnEl.disabled = false;
+            btnEl.textContent = '发送回复';
+            alert('回复发送失败，请稍后重试。错误: ' + resp.error.message);
+          } else {
+            loadMessages();
+          }
+        })
+        .catch(function(err) {
+          console.error('网络错误:', err);
+          btnEl.disabled = false;
+          btnEl.textContent = '发送回复';
           alert('网络连接出错，请稍后重试。');
         });
     };

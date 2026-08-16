@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竹知了 · 传统游戏互动 · 临汾一中2522班</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f1e6;
+    --paper-dark: #ece4d2;
+    --ink: #2a2620;
+    --ink-soft: #6b6255;
+    --flag-red: #b5342a;
+    --uniform-navy: #2c3e56;
+    --uniform-navy-light: #3f5474;
+    --hairline: rgba(42,38,32,0.18);
+    --bamboo: #c9a26b;
+    --bamboo-dark: #a97f45;
+    --bamboo-light: #e7cd9d;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'Noto Sans SC', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  hr.rule { border: none; border-top: 1px solid var(--hairline); margin: 0; }
+
+  /* ---- Nav ---- */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(246,241,230,0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
+  .nav-brand { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 16px; letter-spacing: 0.05em; }
+  .nav-brand a { color: var(--ink); text-decoration: none; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    font-size: 13px; color: var(--ink-soft); text-decoration: none;
+    letter-spacing: 0.03em; position: relative; padding-bottom: 2px;
+  }
+  .nav-links a::after {
+    content: ""; position: absolute; left: 0; bottom: -2px; height: 1px; width: 0;
+    background: var(--flag-red); transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--flag-red); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a.current { color: var(--flag-red); }
+  .nav-links a.current::after { width: 100%; }
+
+  /* ---- Hero ---- */
+  .toy-hero { padding: 64px 0 40px; text-align: center; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.35em; color: var(--flag-red); font-weight: 500; margin: 0 0 18px; }
+  .toy-hero h1 {
+    font-family: 'Noto Serif SC', serif; font-weight: 900;
+    font-size: clamp(30px, 5.5vw, 46px); margin: 0 0 14px;
+  }
+  .toy-hero p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.9; max-width: 520px; margin: 0 auto; }
+
+  /* ---- Toy stage ---- */
+  .toy-sec { padding: 8px 0 48px; }
+  .toy-card {
+    background: #fff; border: 1px solid var(--hairline);
+    box-shadow: 0 10px 30px rgba(42,38,32,0.08);
+    padding: 36px 28px 30px; max-width: 640px; margin: 0 auto;
+  }
+  .toy-stage {
+    position: relative; text-align: center; user-select: none; -webkit-user-select: none;
+    touch-action: manipulation; cursor: pointer;
+  }
+  .toy-stage svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+  .toy-stage:active { cursor: grabbing; }
+  .pull-hint { font-size: 12.5px; color: var(--ink-soft); margin: 10px 0 0; letter-spacing: 0.04em; }
+  .pull-hint b { color: var(--flag-red); font-weight: 600; }
+
+  .toy-stats { display: flex; justify-content: center; gap: 16px; margin: 18px 0 4px; flex-wrap: wrap; }
+  .stat { background: var(--paper); border: 1px solid var(--hairline); padding: 10px 18px; min-width: 120px; }
+  .stat .num { font-family: 'Noto Serif SC', serif; font-size: 22px; font-weight: 900; color: var(--uniform-navy); }
+  .stat .lbl { font-size: 11px; letter-spacing: 0.15em; color: var(--ink-soft); margin-top: 2px; }
+
+  .toy-actions { display: flex; justify-content: center; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+  .btn {
+    font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 500;
+    border: none; padding: 12px 26px; letter-spacing: 0.05em;
+    cursor: pointer; transition: background 0.25s, transform 0.15s;
+  }
+  .btn-pull { color: #fff; background: var(--flag-red); }
+  .btn-pull:hover { background: #9c2b22; }
+  .btn-pull:active, .btn-pull.pressed { transform: scale(0.96); background: #8a241c; }
+  .btn-chirp { color: var(--uniform-navy); background: transparent; border: 1.5px solid var(--uniform-navy); }
+  .btn-chirp:hover { background: var(--uniform-navy); color: #fff; }
+  .btn:active { transform: scale(0.97); }
+
+  /* ---- Info tabs ---- */
+  .info-sec { padding: 8px 0 72px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+  .tab-btn {
+    font-family: 'Noto Sans SC', sans-serif; font-size: 13.5px; letter-spacing: 0.06em;
+    color: var(--ink-soft); background: transparent; border: 1px solid var(--hairline);
+    padding: 10px 22px; cursor: pointer; transition: all 0.25s;
+  }
+  .tab-btn:hover { color: var(--flag-red); border-color: var(--flag-red); }
+  .tab-btn.active { background: var(--uniform-navy); border-color: var(--uniform-navy); color: #fff; }
+  .info-panel { display: none; background: #fff; border: 1px solid var(--hairline); padding: 30px 32px; }
+  .info-panel.active { display: block; }
+  .info-panel h3 { font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 700; margin: 0 0 14px; }
+  .info-panel p, .info-panel li { font-size: 13.5px; color: var(--ink); line-height: 2; }
+  .info-panel ol, .info-panel ul { margin: 0; padding-left: 22px; }
+  .info-panel .tip {
+    background: var(--paper); border-left: 3px solid var(--flag-red);
+    padding: 10px 14px; font-size: 12.5px; color: var(--ink-soft);
+    margin-top: 16px; line-height: 1.9;
+  }
+
+  /* ---- Back & footer ---- */
+  .back-sec { padding: 0 0 64px; text-align: center; }
+  .back-btn {
+    font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 500;
+    color: #fff; background: var(--uniform-navy); border: none; padding: 12px 32px;
+    cursor: pointer; letter-spacing: 0.03em; transition: background 0.25s, transform 0.15s;
+    display: inline-block; text-decoration: none;
+  }
+  .back-btn:hover { background: var(--uniform-navy-light); }
+  .back-btn:active { transform: scale(0.97); }
+  footer { padding: 48px 0 72px; text-align: center; border-top: 1px solid var(--hairline); }
+  footer p {
+    font-family: 'Noto Serif SC', serif; font-size: 15px; color: var(--ink-soft);
+    line-height: 2; max-width: 460px; margin: 0 auto;
+  }
+  footer .sign { display: block; margin-top: 16px; font-size: 12px; letter-spacing: 0.2em; color: var(--flag-red); }
+
+  /* ---- Reveal ---- */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(.2,.7,.3,1), transform 0.7s cubic-bezier(.2,.7,.3,1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 760px) {
+    .toy-card { padding: 26px 16px 22px; }
+    .info-panel { padding: 22px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-brand"><a href="index.html">临汾一中 · 2522班</a></div>
+    <div class="nav-links">
+      <a href="index.html#school">学校简介</a>
+      <a href="index.html#class">班级介绍</a>
+      <a href="index.html#gallery">精彩瞬间</a>
+      <a href="message-board.html">留言板</a>
+      <a href="fun.html">趣味项目</a>
+    </div>
+  </div>
+</nav>
+
+<header class="toy-hero reveal">
+  <div class="wrap">
+    <p class="eyebrow">TRADITIONAL TOY · 传统玩具</p>
+    <h1>竹知了</h1>
+    <p>一根线，一片竹，拉一拉就嗡嗡作响，像极了夏天的蝉鸣。按下并按住，让竹知了转起来吧。</p>
+  </div>
+</header>
+
+<hr class="rule">
+
+<section class="toy-sec">
+  <div class="wrap">
+    <div class="toy-card reveal">
+      <div class="toy-stage" id="stage">
+        <svg viewBox="0 0 320 380" role="img" aria-label="竹知了互动玩具">
+          <defs>
+            <linearGradient id="bambooGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#e7cd9d"/>
+              <stop offset="0.5" stop-color="#c9a26b"/>
+              <stop offset="1" stop-color="#a97f45"/>
+            </linearGradient>
+          </defs>
+          <!-- 顶部竹棍手柄 -->
+          <rect id="handle" x="126" y="42" width="68" height="18" rx="9" fill="url(#bambooGrad)" stroke="#8a6a3a" stroke-width="2"/>
+          <path d="M140 51 h40" stroke="#8a6a3a" stroke-width="1.5" opacity="0.45"/>
+          <!-- 悬绳（拉紧时会变直） -->
+          <path id="lineL" d="M140 60 C 148 110, 152 150, 160 200" fill="none" stroke="#8a6a3a" stroke-width="2"/>
+          <path id="lineR" d="M180 60 C 172 110, 168 150, 160 200" fill="none" stroke="#8a6a3a" stroke-width="2"/>
+          <!-- 竹片（旋转体） -->
+          <g id="blade">
+            <ellipse cx="160" cy="200" rx="94" ry="29" fill="url(#bambooGrad)" stroke="#8a6a3a" stroke-width="2"/>
+            <path d="M 122 191 L 122 209" stroke="#8a6a3a" stroke-width="1.4" opacity="0.5"/>
+            <path d="M 198 191 L 198 209" stroke="#8a6a3a" stroke-width="1.4" opacity="0.5"/>
+            <path d="M 84 200 Q 160 186 236 200" fill="none" stroke="#8a6a3a" stroke-width="1.2" opacity="0.35"/>
+            <path d="M 84 200 Q 160 214 236 200" fill="none" stroke="#8a6a3a" stroke-width="1.2" opacity="0.35"/>
+            <circle cx="160" cy="200" r="7" fill="#4a3a26"/>
+            <circle cx="160" cy="200" r="2.5" fill="#f6f1e6"/>
+          </g>
+          <!-- 孔下棉线 -->
+          <path id="tailLine" d="M160 200 L160 344" fill="none" stroke="#8a6a3a" stroke-width="2"/>
+          <circle cx="160" cy="346" r="5" fill="#8a6a3a"/>
+          <path d="M155 346 l10 0 M160 341 l0 10" stroke="#f6f1e6" stroke-width="1" opacity="0.7"/>
+        </svg>
+        <p class="pull-hint">按住 <b>竹知了</b> 或下方按钮拉线，松开就慢慢停下来～</p>
+      </div>
+
+      <div class="toy-stats">
+        <div class="stat"><div class="num" id="speedVal">0</div><div class="lbl">转速（转/分）</div></div>
+        <div class="stat"><div class="num" id="countVal">0</div><div class="lbl">累计转动（圈）</div></div>
+      </div>
+
+      <div class="toy-actions">
+        <button class="btn btn-pull" id="pullBtn">拉线！让竹知了转起来</button>
+        <button class="btn btn-chirp" id="chirpBtn">听一声蝉鸣</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="info-sec">
+  <div class="wrap">
+    <div class="tabs reveal" id="tabs">
+      <button class="tab-btn active" data-tab="how">玩法</button>
+      <button class="tab-btn" data-tab="make">亲手做</button>
+      <button class="tab-btn" data-tab="know">小知识</button>
+    </div>
+
+    <div class="info-panel active reveal" id="panel-how">
+      <h3>怎么玩竹知了？</h3>
+      <p>竹知了是流传很久的传统小玩具，做法简单，玩起来更有意思：</p>
+      <ul>
+        <li>用大拇指和食指捏住竹片两边的棉线，把线在竹片中间的孔上绕几圈；</li>
+        <li>双手一拉一松、一拉一松，竹片就会飞快地旋转起来；</li>
+        <li>随着转速变化，竹片会发出「嗡嗡嗡」的声音，就像夏天的蝉在唱歌。</li>
+      </ul>
+      <p>在本页，你只需<strong>按住竹知了或按钮</strong>模拟拉线，就能听见合成出的蝉鸣声。转速越快，声音越急促响亮哦。</p>
+      <div class="tip">小提示：戴好小圆眼镜认真听，转速很高时声音会接近真正的蝉鸣呢。</div>
+    </div>
+
+    <div class="info-panel reveal" id="panel-make">
+      <h3>亲手做一个竹知了</h3>
+      <ol>
+        <li>准备一小段竹子（或冰棍棒），削成约 1 厘米宽、8 厘米长的薄竹片，打磨光滑；</li>
+        <li>在竹片正中间用钉子或锥子打一个小孔；</li>
+        <li>把一根结实的棉线从孔中穿过，两端对齐打结，留出足够长的线头；</li>
+        <li>把线在竹片上绕几圈，拉紧后一松一紧，竹知了就能转起来啦。</li>
+      </ol>
+      <p>没有竹子的话，用硬纸板、塑料片也能做出简易版，试试看哪种材料声音最好听。</p>
+      <div class="tip">安全提醒：削竹片和打孔时要小心手指，最好请大人帮忙，或者使用已经加工好的材料哦。</div>
+    </div>
+
+    <div class="info-panel reveal" id="panel-know">
+      <h3>竹知了与小知识</h3>
+      <p>竹知了属于传统民间玩具，与竹蜻蜓、陀螺、空竹一样，靠简单的物理原理带来快乐：绕线储存的弹性与惯性，让竹片高速旋转、搅动空气发出声响。</p>
+      <p>在传统游戏治疗中，这类小玩具常被用来帮助孩子集中注意力、练习手眼协调，那有节奏的嗡嗡声还能让人放松下来；对大人来说，转动的竹知了也常常唤起童年的美好回忆，是连接代际的温暖媒介。</p>
+      <div class="tip">你知道吗？知了的学名叫「蝉」，古人认为蝉居高饮露、清高廉洁，常把它当作高洁的象征，竹知了也因此多了一分雅趣。</div>
+    </div>
+  </div>
+</section>
+
+<section class="back-sec">
+  <div class="wrap">
+    <a class="back-btn" href="fun.html">返回趣味项目</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>学习认真，玩也尽兴。<br>愿 2522 班的每一天都闪闪发光。</p>
+    <span class="sign">— 临汾一中 2522班</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // —— 元素 ——
+  var stage = document.getElementById('stage');
+  var pullBtn = document.getElementById('pullBtn');
+  var chirpBtn = document.getElementById('chirpBtn');
+  var blade = document.getElementById('blade');
+  var lineL = document.getElementById('lineL');
+  var lineR = document.getElementById('lineR');
+  var speedVal = document.getElementById('speedVal');
+  var countVal = document.getElementById('countVal');
+
+  // —— 状态 ——
+  var speed = 0;        // 0 ~ 1
+  var angle = 0;        // 累计角度（度）
+  var rounds = 0;       // 累计圈数
+  var pulling = false;
+  var last = performance.now();
+
+  // —— 音频 ——
+  var ctx = null, osc1 = null, osc2 = null, lfo = null, master = null;
+  function ensureAudio(){
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      osc1 = ctx.createOscillator(); osc1.type = 'sine';
+      osc2 = ctx.createOscillator(); osc2.type = 'triangle';
+      lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 24;
+      var lfoGain = ctx.createGain(); lfoGain.gain.value = 0.35;
+      var base = ctx.createGain(); base.gain.value = 0.5;
+      var g1 = ctx.createGain(); g1.gain.value = 1;
+      var g2 = ctx.createGain(); g2.gain.value = 0.4;
+      master = ctx.createGain(); master.gain.value = 0;
+      osc1.connect(g1); g1.connect(master);
+      osc2.connect(g2); g2.connect(master);
+      lfo.connect(lfoGain); lfoGain.connect(base.gain);
+      osc1.connect(base); osc2.connect(base); base.connect(master);
+      master.connect(ctx.destination);
+      osc1.start(); osc2.start(); lfo.start();
+    }
+    if (ctx.state === 'suspended') { ctx.resume(); }
+  }
+  function updateAudio(){
+    if (!ctx) return;
+    var f = 150 + speed * 280;
+    osc1.frequency.setTargetAtTime(f, ctx.currentTime, 0.03);
+    osc2.frequency.setTargetAtTime(f * 2, ctx.currentTime, 0.03);
+    master.gain.setTargetAtTime(speed * 0.4, ctx.currentTime, 0.03);
+  }
+
+  // —— 拉线逻辑 ——
+  function setPulling(v){
+    pulling = v;
+    pullBtn.classList.toggle('pressed', v);
+    if (v) ensureAudio();
+  }
+  function bind(el){
+    el.addEventListener('pointerdown', function(e){ e.preventDefault(); setPulling(true); });
+    el.addEventListener('pointerup', function(){ setPulling(false); });
+    el.addEventListener('pointercancel', function(){ setPulling(false); });
+    el.addEventListener('pointerleave', function(){ setPulling(false); });
+  }
+  bind(stage);
+  bind(pullBtn);
+  // 触屏兜底
+  ['touchstart','touchend','touchcancel'].forEach(function(ev){
+    var on = (ev === 'touchstart');
+    stage.addEventListener(ev, function(e){ if (on){ e.preventDefault(); setPulling(true); } else { setPulling(false); } }, { passive: false });
+    pullBtn.addEventListener(ev, function(e){ if (on){ e.preventDefault(); setPulling(true); } else { setPulling(false); } }, { passive: false });
+  });
+
+  // —— 蝉鸣 ——
+  chirpBtn.addEventListener('click', function(){
+    ensureAudio();
+    var t = ctx.currentTime;
+    var o = ctx.createOscillator(); o.type = 'sawtooth';
+    var g = ctx.createGain();
+    var wob = ctx.createOscillator(); wob.type = 'sine'; wob.frequency.value = 22;
+    var wg = ctx.createGain(); wg.gain.value = 600;
+    wob.connect(wg); wg.connect(o.frequency);
+    o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.12, t + 0.06);
+    g.gain.setValueAtTime(0.12, t + 0.5);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 2.6);
+    o.frequency.setValueAtTime(2400, t);
+    o.frequency.linearRampToValueAtTime(3000, t + 0.1);
+    o.frequency.linearRampToValueAtTime(2600, t + 2.5);
+    o.start(t); wob.start(t);
+    o.stop(t + 2.8); wob.stop(t + 2.8);
+  });
+
+  // —— 主循环 ——
+  function frame(now){
+    var dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    if (pulling) {
+      speed += (1 - speed) * Math.min(1, dt * 4.2);
+    } else {
+      speed *= Math.pow(0.12, dt);
+      if (speed < 0.002) speed = 0;
+    }
+    angle += speed * 720 * dt;
+    rounds += speed * 2 * dt;
+    var rpm = Math.round(speed * 120);
+
+    // 竹片：拉紧时整体上移 + 旋转
+    var dy = pulling ? -10 : -2;
+    blade.setAttribute('transform', 'translate(0,' + dy + ') rotate(' + (angle % 360) + ' 160 200)');
+    // 悬绳：拉紧时变直（控制点靠近中线），端点跟随竹片孔
+    var k = pulling ? 0.96 : 0.55;
+    var ey = 200 + dy;
+    lineL.setAttribute('d', 'M140 60 C ' + (160 - 12 * k) + ' ' + (110 + 40 * (1 - k)) + ', 158 ' + (150 + 20 * (1 - k)) + ', 160 ' + ey);
+    lineR.setAttribute('d', 'M180 60 C ' + (160 + 12 * k) + ' ' + (110 + 40 * (1 - k)) + ', 162 ' + (150 + 20 * (1 - k)) + ', 160 ' + ey);
+    // 下线跟随竹片孔
+    var tail = document.getElementById('tailLine');
+    tail.setAttribute('d', 'M160 ' + ey + ' L160 344');
+
+    speedVal.textContent = rpm;
+    countVal.textContent = Math.floor(rounds);
+    updateAudio();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // —— 选项卡 ——
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var panels = {
+    how: document.getElementById('panel-how'),
+    make: document.getElementById('panel-make'),
+    know: document.getElementById('panel-know')
+  };
+  tabBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      tabBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      for (var key in panels) { panels[key].classList.toggle('active', key === btn.dataset.tab); }
+    });
+  });
+
+  // —— reveal ——
+  var reveals = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>

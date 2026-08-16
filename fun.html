@@ -89,6 +89,9 @@
     letter-spacing: 0.05em; border-top: 1px solid var(--hairline); padding-top: 8px;
   }
   .fun-card .f-meta.soon { color: var(--flag-red); }
+  .fun-card-link { display: block; color: inherit; text-decoration: none; }
+  .fun-card-link .fun-card { height: 100%; }
+  .fun-card-link:hover .f-meta { color: var(--flag-red); }
 
   /* ---- Back ---- */
   .back-sec { padding: 0 0 64px; text-align: center; }
@@ -146,6 +149,14 @@
       <span>PROJECTS</span>
     </div>
     <div class="fun-grid">
+      <a class="fun-card-link reveal" href="zhizhiliao.html">
+        <div class="fun-card">
+          <div class="f-icon">知</div>
+          <h3>竹知了</h3>
+          <p>拉一拉棉线，让竹片嗡嗡转起来，听一听夏天的蝉鸣——传统小玩具，在线就能玩。</p>
+          <span class="f-meta">已上线 · 点击体验 →</span>
+        </div>
+      </a>
       <div class="fun-card reveal">
         <div class="f-icon">谜</div>
         <h3>趣味问答</h3>

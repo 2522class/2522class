@@ -29,7 +29,7 @@
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(.2,.7,.3,1), transform 0.7s cubic-bezier(.2,.7,.3,1); }
   .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-  /* ---- Nav (Python-style, unified color) ---- */
+  /* ---- Nav (simple) ---- */
   nav {
     position: sticky; top: 0; z-index: 100;
     background: rgba(246,241,230,0.92);
@@ -37,60 +37,21 @@
     border-bottom: 1px solid var(--hairline);
     box-shadow: 0 1px 0 rgba(42,38,32,0.06);
   }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; max-width: 1000px; }
-  .nav-brand { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 16px; letter-spacing: 0.05em; padding: 18px 0; }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; max-width: 1000px; }
+  .nav-brand { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 16px; letter-spacing: 0.05em; }
   .nav-brand a { color: var(--ink); text-decoration: none; }
-  .nav-toggle { display: none; background: none; border: none; font-size: 22px; color: var(--ink); cursor: pointer; padding: 8px 4px; }
-  .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; }
-  .nav-item { position: relative; }
-  .nav-item > a {
-    display: flex; align-items: center; gap: 5px;
-    padding: 20px 16px; font-size: 13px; color: var(--ink-soft);
-    text-decoration: none; letter-spacing: 0.03em; transition: color 0.25s;
+  .nav-links { display: flex; gap: 26px; }
+  .nav-links a {
+    font-size: 13px; color: var(--ink-soft); text-decoration: none;
+    letter-spacing: 0.03em; transition: color 0.2s;
   }
-  .nav-item > a:hover, .nav-item:hover > a { color: var(--flag-red); }
-  .nav-item .caret { font-size: 10px; opacity: 0.7; transition: transform 0.25s; }
-  .nav-item:hover .caret { transform: rotate(180deg); }
-  .nav-item.current > a { color: var(--flag-red); }
-  .nav-drop {
-    position: absolute; top: 100%; left: 0; min-width: 210px;
-    background: #fff; border: 1px solid var(--hairline);
-    box-shadow: 0 12px 32px rgba(42,38,32,0.14);
-    opacity: 0; visibility: hidden; transform: translateY(8px);
-    transition: opacity 0.25s, transform 0.25s, visibility 0.25s;
-    padding: 10px 0; z-index: 50;
-  }
-  .nav-item:hover .nav-drop, .nav-item:focus-within .nav-drop {
-    opacity: 1; visibility: visible; transform: translateY(0);
-  }
-  .nav-drop .drop-title {
-    padding: 6px 20px 4px; font-size: 11px; letter-spacing: 0.15em;
-    color: var(--flag-red); font-weight: 500;
-  }
-  .nav-drop a {
-    display: block; padding: 9px 20px; font-size: 13px; color: var(--ink);
-    text-decoration: none; transition: background 0.2s, color 0.2s;
-  }
-  .nav-drop a:hover { background: var(--paper-dark); color: var(--flag-red); }
-  .nav-drop a.current { color: var(--flag-red); }
+  .nav-links a:hover { color: var(--flag-red); }
+  .nav-links a.current { color: var(--flag-red); }
 
   @media (max-width: 760px) {
-    nav .wrap { flex-wrap: wrap; padding: 10px 24px; }
-    .nav-brand { padding: 6px 0; }
-    .nav-toggle { display: block; }
-    .nav-menu {
-      display: none; width: 100%; flex-direction: column;
-      background: var(--paper); border-top: 1px solid var(--hairline);
-      padding: 6px 0 12px;
-    }
-    .nav-menu.open { display: flex; }
-    .nav-item > a { padding: 12px 4px; justify-content: space-between; }
-    .nav-drop {
-      position: static; opacity: 1; visibility: visible; transform: none;
-      box-shadow: none; border: none; border-left: 2px solid var(--hairline);
-      margin: 0 0 4px 10px; padding: 0 0 6px 14px; min-width: 0;
-    }
-    .nav-drop .drop-title { display: none; }
+    nav .wrap { padding: 12px 24px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 12px; }
   }
 
   /* ---- Hero ---- */
@@ -221,6 +182,63 @@
   footer p { font-family: 'Noto Serif SC', serif; font-size: 14px; color: var(--ink-soft); }
   footer a { color: var(--flag-red); text-decoration: none; }
 
+  /* ---- Bottom bar (Python-style full menu) ---- */
+  .bottom-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(246,241,230,0.95);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--hairline);
+    box-shadow: 0 -1px 0 rgba(42,38,32,0.06);
+  }
+  .bottom-bar .wrap { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; max-width: 1000px; }
+  .bottom-bar .bb-brand {
+    font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.05em; color: var(--ink); white-space: nowrap;
+  }
+  .bb-menu { display: flex; list-style: none; margin: 0; padding: 0; }
+  .bb-item { position: relative; }
+  .bb-item > a {
+    display: flex; align-items: center; gap: 4px;
+    padding: 16px 13px; font-size: 13px; color: var(--ink-soft);
+    text-decoration: none; letter-spacing: 0.03em; transition: color 0.25s;
+    white-space: nowrap;
+  }
+  .bb-item > a:hover, .bb-item:hover > a { color: var(--flag-red); }
+  .bb-item .caret { font-size: 10px; opacity: 0.7; transition: transform 0.25s; }
+  .bb-item:hover .caret { transform: rotate(180deg); }
+  .bb-item.current > a { color: var(--flag-red); }
+  .bb-drop {
+    position: absolute; bottom: 100%; left: 0; min-width: 210px;
+    background: #fff; border: 1px solid var(--hairline);
+    box-shadow: 0 -8px 32px rgba(42,38,32,0.14);
+    opacity: 0; visibility: hidden; transform: translateY(8px);
+    transition: opacity 0.25s, transform 0.25s, visibility 0.25s;
+    padding: 10px 0; z-index: 50;
+  }
+  .bb-item:hover .bb-drop, .bb-item:focus-within .bb-drop {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .bb-drop .drop-title {
+    padding: 6px 20px 4px; font-size: 11px; letter-spacing: 0.15em;
+    color: var(--flag-red); font-weight: 500;
+  }
+  .bb-drop a {
+    display: block; padding: 9px 20px; font-size: 13px; color: var(--ink);
+    text-decoration: none; transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .bb-drop a:hover { background: var(--paper-dark); color: var(--flag-red); }
+  .bb-drop a.current { color: var(--flag-red); }
+  body { padding-bottom: 56px; }
+
+  @media (max-width: 760px) {
+    .bottom-bar .wrap { padding: 0 12px; }
+    .bottom-bar .bb-brand { display: none; }
+    .bb-menu { overflow-x: auto; }
+    .bb-item > a { padding: 14px 10px; font-size: 12px; }
+    .bb-drop { min-width: 180px; }
+  }
+
   @media (max-width: 600px) {
     .form-card { padding: 24px 20px; }
     .form-foot { flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -232,47 +250,11 @@
 <nav>
   <div class="wrap">
     <div class="nav-brand"><a href="index.html">临汾一中 · 2522班</a></div>
-    <button class="nav-toggle" aria-label="菜单">☰</button>
-    <ul class="nav-menu">
-      <li class="nav-item">
-        <a href="index.html">首页</a>
-      </li>
-      <li class="nav-item">
-        <a href="index.html#school">学校简介 <span class="caret">▾</span></a>
-        <div class="nav-drop">
-          <div class="drop-title">了解学校</div>
-          <a href="index.html#school">百年校史</a>
-          <a href="index.html#spirit">学校精神</a>
-          <a href="index.html#school">校园环境</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a href="index.html#class">班级介绍 <span class="caret">▾</span></a>
-        <div class="nav-drop">
-          <div class="drop-title">认识班级</div>
-          <a href="index.html#class">班级由来</a>
-          <a href="index.html#class">班风学风</a>
-          <a href="index.html#class">班级情谊</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a href="index.html#gallery">精彩瞬间 <span class="caret">▾</span></a>
-        <div class="nav-drop">
-          <div class="drop-title">班级影像</div>
-          <a href="index.html#gallery">研学春游</a>
-          <a href="index.html#gallery">文艺汇演</a>
-          <a href="index.html#gallery">晨光阅读</a>
-        </div>
-      </li>
-      <li class="nav-item current">
-        <a href="index.html#board">互动空间 <span class="caret">▾</span></a>
-        <div class="nav-drop">
-          <div class="drop-title">在线互动</div>
-          <a href="message-board.html" class="current">留言板</a>
-          <a href="fun.html">趣味项目</a>
-        </div>
-      </li>
-    </ul>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="message-board.html" class="current">留言板</a>
+      <a href="fun.html">趣味项目</a>
+    </div>
   </div>
 </nav>
 
@@ -324,16 +306,52 @@
   </div>
 </footer>
 
-<script>
-  // 移动端汉堡菜单
-  var navToggle = document.querySelector('.nav-toggle');
-  var navMenu = document.querySelector('.nav-menu');
-  if (navToggle && navMenu) {
-    navToggle.addEventListener('click', function() {
-      navMenu.classList.toggle('open');
-    });
-  }
-</script>
+<div class="bottom-bar">
+  <div class="wrap">
+    <div class="bb-brand">临汾一中 · 2522班</div>
+    <ul class="bb-menu">
+      <li class="bb-item">
+        <a href="index.html">首页</a>
+      </li>
+      <li class="bb-item">
+        <a href="index.html#school">学校简介 <span class="caret">▾</span></a>
+        <div class="bb-drop">
+          <div class="drop-title">了解学校</div>
+          <a href="index.html#school">百年校史</a>
+          <a href="index.html#spirit">学校精神</a>
+          <a href="index.html#school">校园环境</a>
+        </div>
+      </li>
+      <li class="bb-item">
+        <a href="index.html#class">班级介绍 <span class="caret">▾</span></a>
+        <div class="bb-drop">
+          <div class="drop-title">认识班级</div>
+          <a href="index.html#class">班级由来</a>
+          <a href="index.html#class">班风学风</a>
+          <a href="index.html#class">班级情谊</a>
+        </div>
+      </li>
+      <li class="bb-item">
+        <a href="index.html#gallery">精彩瞬间 <span class="caret">▾</span></a>
+        <div class="bb-drop">
+          <div class="drop-title">班级影像</div>
+          <a href="index.html#gallery">研学春游</a>
+          <a href="index.html#gallery">文艺汇演</a>
+          <a href="index.html#gallery">晨光阅读</a>
+        </div>
+      </li>
+      <li class="bb-item current">
+        <a href="message-board.html">互动空间 <span class="caret">▾</span></a>
+        <div class="bb-drop">
+          <div class="drop-title">在线互动</div>
+          <a href="message-board.html" class="current">留言板</a>
+          <a href="fun.html">趣味项目</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
 <script type="module">
   // ============================================================
   // Supabase 留言板配置

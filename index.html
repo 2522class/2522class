@@ -59,6 +59,17 @@
     will-change: transform;
   }
 
+  /* ============ 触屏设备：关闭强制吸附，恢复自然顺滑滚动 ============ */
+  @media (pointer: coarse), (hover: none) {
+    html { scroll-snap-type: none; }
+    .hero, .school, .overview, .class-sec, .gallery, .board {
+      scroll-snap-align: none;
+      scroll-snap-stop: auto;
+    }
+  }
+  /* 移动浏览器地址栏高度适配 */
+  .hero, .school, .overview, .class-sec, .gallery, .board { min-height: 100dvh; }
+
   /* ============ 通用入场动画（增强版 reveal：模糊消散 + 多方向变体） ============ */
   .reveal {
     opacity: 0;

@@ -232,7 +232,7 @@
     animation-play-state: paused;
     box-shadow: 0 18px 44px rgba(42,38,32,0.28);
   }
-  .hero-photo img { display: block; width: 100%; height: 320px; object-fit: cover; }
+  .hero-photo img { display: block; width: 100%; height: auto; max-height: 360px; object-fit: cover; }
   .hero-photo .flag-tag {
     position: absolute; top: 16px; left: -1px; background: var(--flag-red); color: #fff;
     font-size: 12px; letter-spacing: 0.08em; padding: 6px 14px 6px 12px; font-weight: 500;
@@ -651,7 +651,7 @@
   #to-top circle { fill: none; stroke: var(--flag-red); stroke-width: 2; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 0.1s linear; }
 
   /* ============ 移动端 ============ */
-  @media (max-width: 760px) {
+  @media (max-width: 900px) {
     .hero-inner { grid-template-columns: 1fr; }
     .gallery-grid { grid-template-columns: 1fr; gap: 36px; }
     .gallery-grid .photo-frame img { height: auto; }

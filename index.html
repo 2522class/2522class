@@ -206,6 +206,11 @@
 
   /* ---- Message board ---- */
   .board { padding: 72px 0; }
+  .board-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+    max-width: 860px; margin: 0 auto;
+  }
+  .board-grid .board-card { max-width: none; margin: 0; }
   .board-card {
     text-align: center; background: #fff; border: 1px solid var(--hairline);
     padding: 48px 32px; max-width: 480px; margin: 0 auto;
@@ -254,6 +259,7 @@
     .counters-row { grid-template-columns: repeat(2, 1fr); }
     .counter-item:nth-child(2) { border-right: none; }
     .caption-row { grid-template-columns: 36px 1fr; gap: 12px; }
+    .board-grid { grid-template-columns: 1fr; }
     .board-card { padding: 36px 22px; }
   }
 </style>
@@ -268,6 +274,7 @@
       <a href="#class">班级介绍</a>
       <a href="#gallery">精彩瞬间</a>
       <a href="#board">留言板</a>
+      <a href="fun.html">趣味项目</a>
     </div>
   </div>
 </nav>
@@ -457,11 +464,23 @@
 
 <section class="board" id="board">
   <div class="wrap">
-    <div class="board-card reveal">
-      <div class="board-icon">言</div>
-      <h2>班级留言板</h2>
-      <p>写下你想对 2522 班说的话——祝福、回忆，或是悄悄话。</p>
-      <a class="board-btn" href="message-board.html">进入留言板</a>
+    <div class="sec-head reveal">
+      <h2>互动空间</h2>
+      <span>COMMUNITY</span>
+    </div>
+    <div class="board-grid">
+      <div class="board-card reveal">
+        <div class="board-icon">言</div>
+        <h2>班级留言板</h2>
+        <p>写下你想对 2522 班说的话——祝福、回忆，或是悄悄话。</p>
+        <a class="board-btn" href="message-board.html">进入留言板</a>
+      </div>
+      <div class="board-card reveal reveal-delay-1">
+        <div class="board-icon">趣</div>
+        <h2>趣味项目</h2>
+        <p>学习之余的小乐趣——好玩的、有趣的班级项目都在这里。</p>
+        <a class="board-btn" href="fun.html">进入趣味项目</a>
+      </div>
     </div>
   </div>
 </section>
@@ -514,3 +533,4 @@
 
 </body>
 </html>
+

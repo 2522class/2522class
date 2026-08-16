@@ -19,6 +19,7 @@
     --bamboo: #c9a26b;
     --bamboo-dark: #a97f45;
     --bamboo-light: #e7cd9d;
+    --leaf: #5a7d52;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -50,50 +51,61 @@
   .nav-links a.current::after { width: 100%; }
 
   /* ---- Hero ---- */
-  .toy-hero { padding: 64px 0 40px; text-align: center; }
-  .eyebrow { font-size: 13px; letter-spacing: 0.35em; color: var(--flag-red); font-weight: 500; margin: 0 0 18px; }
+  .toy-hero { padding: 60px 0 36px; text-align: center; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.35em; color: var(--flag-red); font-weight: 500; margin: 0 0 16px; }
   .toy-hero h1 {
     font-family: 'Noto Serif SC', serif; font-weight: 900;
-    font-size: clamp(30px, 5.5vw, 46px); margin: 0 0 14px;
+    font-size: clamp(30px, 5.5vw, 46px); margin: 0 0 12px;
   }
-  .toy-hero p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.9; max-width: 520px; margin: 0 auto; }
+  .toy-hero p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.9; max-width: 540px; margin: 0 auto; }
 
   /* ---- Toy stage ---- */
-  .toy-sec { padding: 8px 0 48px; }
+  .toy-sec { padding: 6px 0 46px; }
   .toy-card {
     background: #fff; border: 1px solid var(--hairline);
     box-shadow: 0 10px 30px rgba(42,38,32,0.08);
-    padding: 36px 28px 30px; max-width: 640px; margin: 0 auto;
+    padding: 22px 22px 26px; max-width: 680px; margin: 0 auto;
   }
   .toy-stage {
-    position: relative; text-align: center; user-select: none; -webkit-user-select: none;
-    touch-action: manipulation; cursor: pointer;
+    position: relative; user-select: none; -webkit-user-select: none;
+    touch-action: none; cursor: grab; overflow: hidden;
+    border: 1px solid var(--hairline); background: #fbf7ec;
   }
-  .toy-stage svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
-  .toy-stage:active { cursor: grabbing; }
-  .pull-hint { font-size: 12.5px; color: var(--ink-soft); margin: 10px 0 0; letter-spacing: 0.04em; }
+  .toy-stage.holding { cursor: grabbing; }
+  #toyCanvas { display: block; width: 100%; height: 420px; }
+  .pull-hint {
+    position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+    font-size: 12.5px; color: var(--ink-soft); letter-spacing: 0.06em;
+    background: rgba(246,241,230,0.86); border: 1px solid var(--hairline);
+    padding: 7px 16px; border-radius: 999px; white-space: nowrap;
+    pointer-events: none; transition: opacity 1s;
+  }
+  .pull-hint.gone { opacity: 0; }
   .pull-hint b { color: var(--flag-red); font-weight: 600; }
 
-  .toy-stats { display: flex; justify-content: center; gap: 16px; margin: 18px 0 4px; flex-wrap: wrap; }
-  .stat { background: var(--paper); border: 1px solid var(--hairline); padding: 10px 18px; min-width: 120px; }
-  .stat .num { font-family: 'Noto Serif SC', serif; font-size: 22px; font-weight: 900; color: var(--uniform-navy); }
+  .toy-stats { display: flex; justify-content: center; gap: 14px; margin: 18px 0 4px; flex-wrap: wrap; }
+  .stat { background: var(--paper); border: 1px solid var(--hairline); padding: 9px 18px; min-width: 112px; text-align: center; }
+  .stat .num { font-family: 'Noto Serif SC', serif; font-size: 22px; font-weight: 900; color: var(--uniform-navy); font-variant-numeric: tabular-nums; }
   .stat .lbl { font-size: 11px; letter-spacing: 0.15em; color: var(--ink-soft); margin-top: 2px; }
 
-  .toy-actions { display: flex; justify-content: center; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+  .toy-actions { display: flex; justify-content: center; gap: 14px; margin-top: 18px; flex-wrap: wrap; }
   .btn {
     font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 500;
-    border: none; padding: 12px 26px; letter-spacing: 0.05em;
-    cursor: pointer; transition: background 0.25s, transform 0.15s;
+    border: none; padding: 11px 26px; letter-spacing: 0.05em;
+    cursor: pointer; transition: background 0.25s, transform 0.15s, color 0.25s;
   }
   .btn-pull { color: #fff; background: var(--flag-red); }
   .btn-pull:hover { background: #9c2b22; }
   .btn-pull:active, .btn-pull.pressed { transform: scale(0.96); background: #8a241c; }
+  .btn-auto { color: var(--uniform-navy); background: transparent; border: 1.5px solid var(--uniform-navy); }
+  .btn-auto:hover { background: var(--uniform-navy); color: #fff; }
+  .btn-auto.on { background: var(--uniform-navy); color: #fff; box-shadow: 0 0 0 3px rgba(44,62,86,0.18); }
   .btn-chirp { color: var(--uniform-navy); background: transparent; border: 1.5px solid var(--uniform-navy); }
   .btn-chirp:hover { background: var(--uniform-navy); color: #fff; }
   .btn:active { transform: scale(0.97); }
 
   /* ---- Info tabs ---- */
-  .info-sec { padding: 8px 0 72px; }
+  .info-sec { padding: 6px 0 72px; }
   .tabs { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
   .tab-btn {
     font-family: 'Noto Sans SC', sans-serif; font-size: 13.5px; letter-spacing: 0.06em;
@@ -135,8 +147,10 @@
   .reveal.in-view { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 760px) {
-    .toy-card { padding: 26px 16px 22px; }
+    .toy-card { padding: 12px 12px 18px; }
+    #toyCanvas { height: 320px; }
     .info-panel { padding: 22px 18px; }
+    .pull-hint { font-size: 11.5px; white-space: normal; text-align: center; max-width: 86%; line-height: 1.7; }
   }
 </style>
 </head>
@@ -159,7 +173,7 @@
   <div class="wrap">
     <p class="eyebrow">TRADITIONAL TOY · 传统玩具</p>
     <h1>竹知了</h1>
-    <p>一根线，一片竹，拉一拉就嗡嗡作响，像极了夏天的蝉鸣。按下并按住，让竹知了转起来吧。</p>
+    <p>一根线，一片竹，甩起来就哇哇叫。在竹园里按住画圈，让竹知了转起来，听一听夏天的蝉鸣。</p>
   </div>
 </header>
 
@@ -169,45 +183,18 @@
   <div class="wrap">
     <div class="toy-card reveal">
       <div class="toy-stage" id="stage">
-        <svg viewBox="0 0 320 380" role="img" aria-label="竹知了互动玩具">
-          <defs>
-            <linearGradient id="bambooGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#e7cd9d"/>
-              <stop offset="0.5" stop-color="#c9a26b"/>
-              <stop offset="1" stop-color="#a97f45"/>
-            </linearGradient>
-          </defs>
-          <!-- 顶部竹棍手柄 -->
-          <rect id="handle" x="126" y="42" width="68" height="18" rx="9" fill="url(#bambooGrad)" stroke="#8a6a3a" stroke-width="2"/>
-          <path d="M140 51 h40" stroke="#8a6a3a" stroke-width="1.5" opacity="0.45"/>
-          <!-- 悬绳（拉紧时会变直） -->
-          <path id="lineL" d="M140 60 C 148 110, 152 150, 160 200" fill="none" stroke="#8a6a3a" stroke-width="2"/>
-          <path id="lineR" d="M180 60 C 172 110, 168 150, 160 200" fill="none" stroke="#8a6a3a" stroke-width="2"/>
-          <!-- 竹片（旋转体） -->
-          <g id="blade">
-            <ellipse cx="160" cy="200" rx="94" ry="29" fill="url(#bambooGrad)" stroke="#8a6a3a" stroke-width="2"/>
-            <path d="M 122 191 L 122 209" stroke="#8a6a3a" stroke-width="1.4" opacity="0.5"/>
-            <path d="M 198 191 L 198 209" stroke="#8a6a3a" stroke-width="1.4" opacity="0.5"/>
-            <path d="M 84 200 Q 160 186 236 200" fill="none" stroke="#8a6a3a" stroke-width="1.2" opacity="0.35"/>
-            <path d="M 84 200 Q 160 214 236 200" fill="none" stroke="#8a6a3a" stroke-width="1.2" opacity="0.35"/>
-            <circle cx="160" cy="200" r="7" fill="#4a3a26"/>
-            <circle cx="160" cy="200" r="2.5" fill="#f6f1e6"/>
-          </g>
-          <!-- 孔下棉线 -->
-          <path id="tailLine" d="M160 200 L160 344" fill="none" stroke="#8a6a3a" stroke-width="2"/>
-          <circle cx="160" cy="346" r="5" fill="#8a6a3a"/>
-          <path d="M155 346 l10 0 M160 341 l0 10" stroke="#f6f1e6" stroke-width="1" opacity="0.7"/>
-        </svg>
-        <p class="pull-hint">按住 <b>竹知了</b> 或下方按钮拉线，松开就慢慢停下来～</p>
+        <canvas id="toyCanvas" aria-label="竹知了互动玩具：按住画圈甩动"></canvas>
+        <p class="pull-hint" id="hint">按住 <b>画圈</b> · 甩起来（手机触屏也可以）</p>
       </div>
 
       <div class="toy-stats">
-        <div class="stat"><div class="num" id="speedVal">0</div><div class="lbl">转速（转/分）</div></div>
-        <div class="stat"><div class="num" id="countVal">0</div><div class="lbl">累计转动（圈）</div></div>
+        <div class="stat"><div class="num" id="rpsVal">0.0</div><div class="lbl">圈 / 秒</div></div>
+        <div class="stat"><div class="num" id="wahVal">0</div><div class="lbl">哇（圈数）</div></div>
+        <div class="stat"><div class="num" id="countVal">0</div><div class="lbl">累计圈数</div></div>
       </div>
 
       <div class="toy-actions">
-        <button class="btn btn-pull" id="pullBtn">拉线！让竹知了转起来</button>
+        <button class="btn btn-auto" id="autoBtn">自动甩</button>
         <button class="btn btn-chirp" id="chirpBtn">听一声蝉鸣</button>
       </div>
     </div>
@@ -224,14 +211,14 @@
 
     <div class="info-panel active reveal" id="panel-how">
       <h3>怎么玩竹知了？</h3>
-      <p>竹知了是流传很久的传统小玩具，做法简单，玩起来更有意思：</p>
+      <p>竹知了是流传很久的传统小玩具，玩起来更有意思：</p>
       <ul>
         <li>用大拇指和食指捏住竹片两边的棉线，把线在竹片中间的孔上绕几圈；</li>
         <li>双手一拉一松、一拉一松，竹片就会飞快地旋转起来；</li>
         <li>随着转速变化，竹片会发出「嗡嗡嗡」的声音，就像夏天的蝉在唱歌。</li>
       </ul>
-      <p>在本页，你只需<strong>按住竹知了或按钮</strong>模拟拉线，就能听见合成出的蝉鸣声。转速越快，声音越急促响亮哦。</p>
-      <div class="tip">小提示：戴好小圆眼镜认真听，转速很高时声音会接近真正的蝉鸣呢。</div>
+      <p>在本页，你只需<strong>按住竹园里的竹知了画圈甩动</strong>，转速越快叫声越响；也可以点「自动甩」看它自己转起来。左边显示的是实时圈/秒，每甩满一圈就多一「哇」。</p>
+      <div class="tip">小提示：戴好小圆眼镜认真听，甩得够快时，合成出的声音会接近真正的蝉鸣哦。</div>
     </div>
 
     <div class="info-panel reveal" id="panel-make">
@@ -270,129 +257,479 @@
 
 <script>
 (function(){
-  // —— 元素 ——
+  'use strict';
+  var TAU = Math.PI * 2;
+  function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
+
+  /* ================= 画布与状态 ================= */
+  var cv = document.getElementById('toyCanvas');
+  var ctx = cv.getContext('2d');
   var stage = document.getElementById('stage');
-  var pullBtn = document.getElementById('pullBtn');
+  var hint = document.getElementById('hint');
+  var rpsEl = document.getElementById('rpsVal');
+  var wahEl = document.getElementById('wahVal');
+  var countEl = document.getElementById('countVal');
+  var autoBtn = document.getElementById('autoBtn');
   var chirpBtn = document.getElementById('chirpBtn');
-  var blade = document.getElementById('blade');
-  var lineL = document.getElementById('lineL');
-  var lineR = document.getElementById('lineR');
-  var speedVal = document.getElementById('speedVal');
-  var countVal = document.getElementById('countVal');
 
-  // —— 状态 ——
-  var speed = 0;        // 0 ~ 1
-  var angle = 0;        // 累计角度（度）
-  var rounds = 0;       // 累计圈数
-  var pulling = false;
-  var last = performance.now();
+  var W = 0, H = 0, DPR = 1;
 
-  // —— 音频 ——
-  var ctx = null, osc1 = null, osc2 = null, lfo = null, master = null;
-  function ensureAudio(){
-    if (!ctx) {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-      osc1 = ctx.createOscillator(); osc1.type = 'sine';
-      osc2 = ctx.createOscillator(); osc2.type = 'triangle';
-      lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 24;
-      var lfoGain = ctx.createGain(); lfoGain.gain.value = 0.35;
-      var base = ctx.createGain(); base.gain.value = 0.5;
-      var g1 = ctx.createGain(); g1.gain.value = 1;
-      var g2 = ctx.createGain(); g2.gain.value = 0.4;
-      master = ctx.createGain(); master.gain.value = 0;
-      osc1.connect(g1); g1.connect(master);
-      osc2.connect(g2); g2.connect(master);
-      lfo.connect(lfoGain); lfoGain.connect(base.gain);
-      osc1.connect(base); osc2.connect(base); base.connect(master);
-      master.connect(ctx.destination);
-      osc1.start(); osc2.start(); lfo.start();
+  // 玩具状态：甩杆杆梢 stick、竹筒(绳系质点) tube
+  var stick = { x: 0, y: 0 };
+  var target = { x: 0, y: 0 };
+  var tube = { x: 0, y: 0, vx: 0, vy: 0 };
+  var theta = 0, prevTheta = 0, omega = 0;
+  var rps = 0, drive = 0, taut = 0, active = 0;
+  var revAccum = 0, wahCount = 0, totalRounds = 0;
+  var tubeSpin = 0;                 // 竹筒自身旋转（视觉）
+  var pointerDown = false, pointerId = null, pointerLift = 0;
+  var autoOn = false, autoPhase = 0, autoRps = 0;
+  var ROPE_LEN = 150, AUTO_R = 58;
+  var ROPE_K = 2600, ROPE_D = 14, GRAV = 1150, AIR_DRAG = 0.35;
+  var hintGone = false, singTime = 0;
+
+  function recenter(){
+    ROPE_LEN = Math.max(80, Math.min(H * 0.42, 150));
+    AUTO_R = Math.max(38, Math.min(W, H) * 0.1);
+    stick.x = target.x = W * 0.5;
+    stick.y = target.y = H * 0.46;
+    tube.x = stick.x + 8;
+    tube.y = stick.y + ROPE_LEN * 0.92;
+    tube.vx = 34; tube.vy = 0;
+    prevTheta = Math.atan2(tube.y - stick.y, tube.x - stick.x);
+  }
+
+  function resize(){
+    var rect = cv.getBoundingClientRect();
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = rect.width; H = rect.height;
+    cv.width = Math.round(W * DPR);
+    cv.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    recenter();
+  }
+  window.addEventListener('resize', resize);
+
+  /* ================= 物理 ================= */
+  function physStep(h){
+    var dx = tube.x - stick.x, dy = tube.y - stick.y;
+    var d = Math.hypot(dx, dy) || 1e-6;
+    var ux = dx / d, uy = dy / d;
+    var ax = 0, ay = GRAV;
+    if (d > ROPE_LEN) {
+      var vrad = tube.vx * ux + tube.vy * uy;
+      var f = -ROPE_K * (d - ROPE_LEN) - ROPE_D * vrad;
+      ax += f * ux; ay += f * uy;
     }
-    if (ctx.state === 'suspended') { ctx.resume(); }
+    ax -= AIR_DRAG * tube.vx;
+    ay -= AIR_DRAG * tube.vy;
+    tube.vx += ax * h; tube.vy += ay * h;
+    tube.x += tube.vx * h; tube.y += tube.vy * h;
   }
+
+  function update(dt){
+    // 甩杆目标：手动指针 / 自动画圈
+    if (autoOn) {
+      autoRps += (3.4 - autoRps) * Math.min(1, dt * 1.1);
+      autoPhase += autoRps * TAU * dt;
+      target.x = W * 0.5 + AUTO_R * Math.cos(autoPhase);
+      target.y = H * 0.46 + AUTO_R * Math.sin(autoPhase);
+    } else {
+      autoRps *= Math.max(0, 1 - dt * 3);
+    }
+    var k = 1 - Math.exp(-dt * 26);
+    stick.x += (target.x - stick.x) * k;
+    stick.y += (target.y - stick.y) * k;
+
+    // 定步长积分
+    var acc = dt, h = 1 / 240;
+    while (acc > 1e-6) { var s = Math.min(h, acc); physStep(s); acc -= s; }
+
+    // 绳向角速度 → 圈/秒
+    theta = Math.atan2(tube.y - stick.y, tube.x - stick.x);
+    var dth = theta - prevTheta;
+    while (dth >  Math.PI) dth -= TAU;
+    while (dth < -Math.PI) dth += TAU;
+    omega += (dth / dt - omega) * Math.min(1, dt * 9);
+    prevTheta = theta;
+    rps = Math.abs(omega) / TAU;
+    totalRounds += Math.abs(dth) / TAU;
+    tubeSpin += omega * dt;
+
+    // 「哇」：手动甩才算数
+    if (!autoOn && active > 0.3) {
+      revAccum += Math.abs(dth);
+      if (revAccum >= TAU) {
+        var n = Math.floor(revAccum / TAU);
+        revAccum -= n * TAU;
+        wahCount += n;
+      }
+    } else {
+      revAccum = 0;
+    }
+
+    var ropeDist = Math.hypot(tube.x - stick.x, tube.y - stick.y);
+    taut = clamp((ropeDist / ROPE_LEN - 0.88) / 0.12, 0, 1);
+    drive = clamp((rps - 1.1) / 2.6, 0, 1);
+    var tgt = Math.pow(drive, 1.25) * taut;
+    active += (tgt - active) * Math.min(1, dt * (tgt > active ? 10 : 3.2));
+
+    if (active > 0.3) {
+      singTime += dt;
+      if (!hintGone && singTime > 1.2) { hintGone = true; hint.classList.add('gone'); }
+    }
+    updateAudio();
+    spawnFx(dt);
+
+    // 显示
+    rpsEl.textContent = rps.toFixed(1);
+    wahEl.textContent = wahCount;
+    countEl.textContent = Math.floor(totalRounds);
+  }
+
+  /* ================= 音频 ================= */
+  var AC = null, master = null;
+  var osc = null, lfo = null, shaper = null, am = null, wah = null, sum = null, hp = null;
+
+  function ensureAudio(forceResume){
+    if (!AC) {
+      try {
+        AC = new (window.AudioContext || window.webkitAudioContext)();
+        master = AC.createGain(); master.gain.value = 0;
+        master.connect(AC.destination);
+        startVoice();
+      } catch (e) { return; }
+    }
+    if (AC.state === 'suspended' && forceResume) { AC.resume(); }
+  }
+
+  /* 合成蝉鸣声：锯齿波 → tanh 整形 → 调幅 → 带通 → 三共振峰 → 高通 */
+  function startVoice(){
+    if (!AC || osc) return;
+    var t = AC.currentTime;
+
+    osc = AC.createOscillator(); osc.type = 'sawtooth'; osc.frequency.value = 70;
+
+    shaper = AC.createWaveShaper();
+    var n = 1024, curve = new Float32Array(n);
+    for (var i = 0; i < n; i++) {
+      var x = i / (n - 1) * 2 - 1;
+      curve[i] = Math.tanh(x * 3.2);
+    }
+    shaper.curve = curve; shaper.oversample = '2x';
+    osc.connect(shaper);
+
+    am = AC.createGain(); am.gain.value = 0.62;
+    lfo = AC.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 30;
+    var lfoAmt = AC.createGain(); lfoAmt.gain.value = 0.34;
+    lfo.connect(lfoAmt); lfoAmt.connect(am.gain);
+    shaper.connect(am);
+
+    wah = AC.createBiquadFilter();
+    wah.type = 'bandpass'; wah.frequency.value = 900; wah.Q.value = 2.2;
+    am.connect(wah);
+
+    sum = AC.createGain(); sum.gain.value = 1;
+    var formant = function(freq, q, g) {
+      var f = AC.createBiquadFilter();
+      f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = q;
+      var fg = AC.createGain(); fg.gain.value = g;
+      wah.connect(f); f.connect(fg); fg.connect(sum);
+    };
+    formant(1050, 9, 0.9);
+    formant(2150, 11, 0.6);
+    formant(3350, 13, 0.4);
+
+    hp = AC.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 360;
+    sum.connect(hp); hp.connect(master);
+
+    osc.start(t); lfo.start(t);
+  }
+
   function updateAudio(){
-    if (!ctx) return;
-    var f = 150 + speed * 280;
-    osc1.frequency.setTargetAtTime(f, ctx.currentTime, 0.03);
-    osc2.frequency.setTargetAtTime(f * 2, ctx.currentTime, 0.03);
-    master.gain.setTargetAtTime(speed * 0.4, ctx.currentTime, 0.03);
+    if (!AC || AC.state !== 'running' || !osc) return;
+    var t = AC.currentTime;
+    master.gain.setTargetAtTime(0.8 * Math.pow(active, 1.3), t, 0.07);
+    var f0 = clamp(55 + rps * 17, 50, 195);
+    osc.frequency.setTargetAtTime(f0, t, 0.06);
+    osc.detune.setTargetAtTime(46 * Math.sin(theta + 0.9) * clamp(active * 1.6, 0, 1), t, 0.03);
+    lfo.frequency.setTargetAtTime(24 + rps * 4.5, t, 0.1);
+    var wf = 760 + 520 * active + (430 + 330 * active) * Math.sin(theta - 0.7);
+    wah.frequency.setTargetAtTime(Math.max(320, wf), t, 0.025);
   }
 
-  // —— 拉线逻辑 ——
-  function setPulling(v){
-    pulling = v;
-    pullBtn.classList.toggle('pressed', v);
-    if (v) ensureAudio();
-  }
-  function bind(el){
-    el.addEventListener('pointerdown', function(e){ e.preventDefault(); setPulling(true); });
-    el.addEventListener('pointerup', function(){ setPulling(false); });
-    el.addEventListener('pointercancel', function(){ setPulling(false); });
-    el.addEventListener('pointerleave', function(){ setPulling(false); });
-  }
-  bind(stage);
-  bind(pullBtn);
-  // 触屏兜底
-  ['touchstart','touchend','touchcancel'].forEach(function(ev){
-    var on = (ev === 'touchstart');
-    stage.addEventListener(ev, function(e){ if (on){ e.preventDefault(); setPulling(true); } else { setPulling(false); } }, { passive: false });
-    pullBtn.addEventListener(ev, function(e){ if (on){ e.preventDefault(); setPulling(true); } else { setPulling(false); } }, { passive: false });
-  });
-
-  // —— 蝉鸣 ——
+  /* 一声蝉鸣（独立短音） */
   chirpBtn.addEventListener('click', function(){
-    ensureAudio();
-    var t = ctx.currentTime;
-    var o = ctx.createOscillator(); o.type = 'sawtooth';
-    var g = ctx.createGain();
-    var wob = ctx.createOscillator(); wob.type = 'sine'; wob.frequency.value = 22;
-    var wg = ctx.createGain(); wg.gain.value = 600;
+    ensureAudio(true);
+    if (!AC) return;
+    var t = AC.currentTime;
+    var o = AC.createOscillator(); o.type = 'sawtooth';
+    var g = AC.createGain();
+    var wob = AC.createOscillator(); wob.type = 'sine'; wob.frequency.value = 22;
+    var wg = AC.createGain(); wg.gain.value = 600;
     wob.connect(wg); wg.connect(o.frequency);
-    o.connect(g); g.connect(ctx.destination);
+    o.connect(g); g.connect(AC.destination);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.12, t + 0.06);
-    g.gain.setValueAtTime(0.12, t + 0.5);
+    g.gain.linearRampToValueAtTime(0.09, t + 0.06);
+    g.gain.setValueAtTime(0.09, t + 0.5);
     g.gain.exponentialRampToValueAtTime(0.001, t + 2.6);
-    o.frequency.setValueAtTime(2400, t);
-    o.frequency.linearRampToValueAtTime(3000, t + 0.1);
-    o.frequency.linearRampToValueAtTime(2600, t + 2.5);
+    o.frequency.setValueAtTime(2200, t);
+    o.frequency.linearRampToValueAtTime(2800, t + 0.1);
+    o.frequency.linearRampToValueAtTime(2400, t + 2.5);
     o.start(t); wob.start(t);
     o.stop(t + 2.8); wob.stop(t + 2.8);
   });
 
-  // —— 主循环 ——
+  /* ================= 交互 ================= */
+  function setAuto(on){
+    autoOn = on;
+    autoBtn.classList.toggle('on', on);
+    autoBtn.textContent = on ? '停一停' : '自动甩';
+    if (on) { ensureAudio(true); pointerDown = false; cv.classList.remove('holding'); }
+  }
+  autoBtn.addEventListener('click', function(){ setAuto(!autoOn); });
+
+  cv.addEventListener('pointerdown', function(e){
+    if (pointerDown) return;
+    pointerDown = true;
+    pointerId = e.pointerId;
+    pointerLift = e.pointerType === 'touch' ? Math.min(90, ROPE_LEN * 0.7) : 0;
+    cv.classList.add('holding');
+    cv.setPointerCapture(e.pointerId);
+    if (autoOn) setAuto(false);
+    target.x = e.clientX - cv.getBoundingClientRect().left;
+    target.y = Math.max(12, e.clientY - cv.getBoundingClientRect().top - pointerLift);
+    ensureAudio(true);
+  });
+  cv.addEventListener('pointermove', function(e){
+    if (!pointerDown || e.pointerId !== pointerId) return;
+    target.x = e.clientX - cv.getBoundingClientRect().left;
+    target.y = Math.max(12, e.clientY - cv.getBoundingClientRect().top - pointerLift);
+  });
+  function release(e){
+    if (pointerDown && e && e.pointerId !== pointerId) return;
+    pointerDown = false;
+    pointerId = null;
+    cv.classList.remove('holding');
+  }
+  cv.addEventListener('pointerup', release);
+  cv.addEventListener('pointercancel', release);
+
+  /* ================= 粒子特效 ================= */
+  var ripples = [], cries = [];
+  var rippleTimer = 0, cryTimer = 0;
+
+  function spawnFx(dt){
+    rippleTimer -= dt; cryTimer -= dt;
+    if (active > 0.15 && rippleTimer <= 0) {
+      rippleTimer = 0.09;
+      ripples.push({ x: tube.x, y: tube.y, r: 14, age: 0, life: 0.7, str: active });
+    }
+    if (active > 0.3 && cryTimer <= 0 && cries.length < 30) {
+      cryTimer = 0.22;
+      var ropeDist = Math.hypot(tube.x - stick.x, tube.y - stick.y) || 1;
+      var ux = (tube.x - stick.x) / ropeDist, uy = (tube.y - stick.y) / ropeDist;
+      var sgn = omega >= 0 ? 1 : -1;
+      var tx = -uy * sgn, ty = ux * sgn;
+      var sp = 70 + Math.random() * 50;
+      cries.push({
+        x: tube.x + ux * 12, y: tube.y + uy * 12,
+        vx: tx * sp + ux * 26, vy: ty * sp + uy * 26 - 16,
+        age: 0, life: 1.1, size: 18 + 26 * active,
+        rot: (Math.random() - 0.5) * 0.8
+      });
+    }
+    for (var i = ripples.length - 1; i >= 0; i--) {
+      var p = ripples[i];
+      p.age += dt; p.r += (170 + 140 * p.str) * dt;
+      if (p.age >= p.life) ripples.splice(i, 1);
+    }
+    for (var j = cries.length - 1; j >= 0; j--) {
+      var c = cries[j];
+      c.age += dt;
+      c.x += c.vx * dt; c.y += c.vy * dt;
+      c.vx *= (1 - dt * 1.2); c.vy = c.vy * (1 - dt * 1.2) - 22 * dt;
+      if (c.age >= c.life) cries.splice(j, 1);
+    }
+  }
+
+  /* ================= 绘制 ================= */
+  function roundRect(x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function drawBackground(){
+    // 纸感天空
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#fbf7ec');
+    g.addColorStop(0.55, '#f3ebd8');
+    g.addColorStop(1, '#e8ddc0');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // 暖阳
+    var sun = ctx.createRadialGradient(W * 0.82, H * 0.18, 4, W * 0.82, H * 0.18, 110);
+    sun.addColorStop(0, 'rgba(255,214,150,0.55)');
+    sun.addColorStop(1, 'rgba(255,214,150,0)');
+    ctx.fillStyle = sun;
+    ctx.fillRect(0, 0, W, H);
+
+    // 底部竹影
+    ctx.lineCap = 'round';
+    var bamboo = [
+      { x: W * 0.08, w: 9,  h: H * 0.30 },
+      { x: W * 0.22, w: 13, h: H * 0.42 },
+      { x: W * 0.38, w: 8,  h: H * 0.26 },
+      { x: W * 0.62, w: 11, h: H * 0.38 },
+      { x: W * 0.80, w: 14, h: H * 0.46 },
+      { x: W * 0.93, w: 8,  h: H * 0.28 }
+    ];
+    for (var i = 0; i < bamboo.length; i++) {
+      var b = bamboo[i];
+      var baseY = H + 10;
+      ctx.strokeStyle = 'rgba(90,125,82,0.14)';
+      ctx.lineWidth = b.w;
+      ctx.beginPath();
+      ctx.moveTo(b.x, baseY);
+      ctx.lineTo(b.x - b.w * 0.3, baseY - b.h);
+      ctx.stroke();
+      // 竹节
+      ctx.strokeStyle = 'rgba(90,125,82,0.10)';
+      ctx.lineWidth = Math.max(2, b.w * 0.28);
+      for (var s = 0.35; s < 1; s += 0.3) {
+        ctx.beginPath();
+        ctx.moveTo(b.x - b.w * 0.28 - b.w * s * 0.4, baseY - b.h * s);
+        ctx.lineTo(b.x - b.w * 0.32 + b.w * s * 0.4, baseY - b.h * s);
+        ctx.stroke();
+      }
+    }
+    // 竹叶
+    ctx.fillStyle = 'rgba(90,125,82,0.16)';
+    for (var l = 0; l < 7; l++) {
+      var lx = (l * 137.5) % W, ly = H * (0.72 + (l % 3) * 0.1);
+      ctx.save();
+      ctx.translate(lx, ly);
+      ctx.rotate(-0.9 + (l % 2) * 1.6);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 26, 7, 0, 0, TAU);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function drawToy(){
+    var ropeDist = Math.hypot(tube.x - stick.x, tube.y - stick.y) || 1;
+
+    // 绳（贝塞尔下垂）
+    var mx = (stick.x + tube.x) / 2, my = (stick.y + tube.y) / 2 + ropeDist * 0.16;
+    ctx.strokeStyle = '#8a6a3a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(stick.x, stick.y);
+    ctx.quadraticCurveTo(mx, my, tube.x, tube.y);
+    ctx.stroke();
+
+    // 竹筒（旋转）
+    ctx.save();
+    ctx.translate(tube.x, tube.y);
+    ctx.rotate(tubeSpin);
+    var g2 = ctx.createLinearGradient(-52, -16, 52, 16);
+    g2.addColorStop(0, '#e7cd9d');
+    g2.addColorStop(0.5, '#c9a26b');
+    g2.addColorStop(1, '#a97f45');
+    ctx.fillStyle = g2;
+    ctx.strokeStyle = '#8a6a3a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 52, 15, 0, 0, TAU);
+    ctx.fill();
+    ctx.stroke();
+    // 竹节纹
+    ctx.strokeStyle = 'rgba(138,106,58,0.5)';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(-30, -11); ctx.lineTo(-30, 11); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(28, -11);  ctx.lineTo(28, 11);  ctx.stroke();
+    // 膜孔（中心穿线孔）
+    ctx.fillStyle = '#4a3a26';
+    ctx.beginPath(); ctx.arc(0, 0, 5.5, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#f6f1e6';
+    ctx.beginPath(); ctx.arc(0, 0, 2, 0, TAU); ctx.fill();
+    ctx.restore();
+
+    // 甩杆（竹签）：从杆梢向反方向伸出
+    var ang = Math.atan2(tube.y - stick.y, tube.x - stick.x) + Math.PI;
+    var px = stick.x + Math.cos(ang) * 46, py = stick.y + Math.sin(ang) * 46;
+    var sg = ctx.createLinearGradient(px, py, stick.x, stick.y);
+    sg.addColorStop(0, '#e7cd9d');
+    sg.addColorStop(1, '#b98d55');
+    ctx.strokeStyle = sg;
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(stick.x, stick.y);
+    ctx.stroke();
+    // 握环
+    ctx.strokeStyle = 'rgba(138,106,58,0.75)';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(px, py, 7, 0, TAU);
+    ctx.stroke();
+    ctx.strokeStyle = '#8a6a3a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(stick.x, stick.y);
+    ctx.lineTo(tube.x, tube.y);
+    ctx.stroke();
+  }
+
+  function drawFx(now){
+    // 涟漪
+    for (var i = 0; i < ripples.length; i++) {
+      var p = ripples[i];
+      var a = (1 - p.age / p.life);
+      ctx.strokeStyle = 'rgba(90,125,82,' + (0.5 * a * (0.4 + 0.6 * p.str)) + ')';
+      ctx.lineWidth = 2 * a;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, TAU);
+      ctx.stroke();
+    }
+    // 「哇」字
+    for (var j = 0; j < cries.length; j++) {
+      var c = cries[j];
+      var al = 1 - c.age / c.life;
+      ctx.save();
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.rot);
+      ctx.font = '700 ' + c.size + 'px "Noto Serif SC","Songti SC",serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'rgba(181,52,42,' + (0.9 * al) + ')';
+      ctx.fillText('哇', 0, 0);
+      ctx.restore();
+    }
+  }
+
+  /* ================= 主循环 ================= */
+  var last = performance.now();
   function frame(now){
     var dt = Math.min((now - last) / 1000, 0.05);
     last = now;
-    if (pulling) {
-      speed += (1 - speed) * Math.min(1, dt * 4.2);
-    } else {
-      speed *= Math.pow(0.12, dt);
-      if (speed < 0.002) speed = 0;
-    }
-    angle += speed * 720 * dt;
-    rounds += speed * 2 * dt;
-    var rpm = Math.round(speed * 120);
-
-    // 竹片：拉紧时整体上移 + 旋转
-    var dy = pulling ? -10 : -2;
-    blade.setAttribute('transform', 'translate(0,' + dy + ') rotate(' + (angle % 360) + ' 160 200)');
-    // 悬绳：拉紧时变直（控制点靠近中线），端点跟随竹片孔
-    var k = pulling ? 0.96 : 0.55;
-    var ey = 200 + dy;
-    lineL.setAttribute('d', 'M140 60 C ' + (160 - 12 * k) + ' ' + (110 + 40 * (1 - k)) + ', 158 ' + (150 + 20 * (1 - k)) + ', 160 ' + ey);
-    lineR.setAttribute('d', 'M180 60 C ' + (160 + 12 * k) + ' ' + (110 + 40 * (1 - k)) + ', 162 ' + (150 + 20 * (1 - k)) + ', 160 ' + ey);
-    // 下线跟随竹片孔
-    var tail = document.getElementById('tailLine');
-    tail.setAttribute('d', 'M160 ' + ey + ' L160 344');
-
-    speedVal.textContent = rpm;
-    countVal.textContent = Math.floor(rounds);
-    updateAudio();
+    update(dt);
+    drawBackground();
+    drawToy();
+    drawFx(now);
     requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
 
-  // —— 选项卡 ——
+  /* ================= 选项卡 & reveal ================= */
   var tabBtns = document.querySelectorAll('.tab-btn');
   var panels = {
     how: document.getElementById('panel-how'),
@@ -407,7 +744,6 @@
     });
   });
 
-  // —— reveal ——
   var reveals = document.querySelectorAll('.reveal');
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(en){
@@ -415,6 +751,10 @@
     });
   }, { threshold: 0.12 });
   reveals.forEach(function(el){ io.observe(el); });
+
+  /* ================= 启动 ================= */
+  resize();
+  requestAnimationFrame(frame);
 })();
 </script>
 </body>

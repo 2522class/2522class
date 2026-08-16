@@ -1,2 +1,0 @@
-Hello from DeepSeek Harness GitHub connector!
-Uploaded via gh CLI + git on 2026-08-16 10:57
